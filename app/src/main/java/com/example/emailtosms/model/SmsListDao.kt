@@ -12,8 +12,8 @@ interface SmsListDao {
     fun getSmsList(): LiveData<List<SmsItemDbModel>>
 
     @Insert()
-    suspend fun addSmsItem(smsItemDbModel: SmsItemDbModel)
+    fun addSmsItem(smsItemDbModel: SmsItemDbModel)
 
     @Query("DELETE FROM sms_items")
-    suspend fun deleteAllSmsItems()
+    fun deleteAllSmsItems()
 }
