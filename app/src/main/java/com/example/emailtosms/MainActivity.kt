@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
                 "alarm-parking@mail.ru",
                 "rQQz8Lq5zcTSdkPpb6W7",
                 "imap.mail.ru",
-                "995"
+                "995",
+                true
             )
         }
     }
