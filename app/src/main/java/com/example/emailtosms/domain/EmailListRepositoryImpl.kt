@@ -29,11 +29,11 @@ class EmailListRepositoryImpl {
             try {
                 val store = Session.getDefaultInstance(properties).getStore("imaps")
                 store.connect(host, user, password)
-                val emailFolder = store.getFolder("INBOX")
-                emailFolder.open(Folder.READ_WRITE)
+                val folder = store.getFolder("INBOX")
+                folder.open(Folder.READ_WRITE)
 
                 val ft = FlagTerm(Flags(Flags.Flag.SEEN), false)
-                val messageList = emailFolder.search(ft)
+                val messageList = folder.search(ft)
                 Log.i("MyTag", "Сообщений в ящике:" + messageList.size)
 
                 var count = 1
@@ -42,14 +42,15 @@ class EmailListRepositoryImpl {
                     if (message.subject.trim() == "5791") {
                         emailList.add(mapEmailMessageToEmailItem(message))
                     }
-                    if(isDeleted) {
+                    if (isDeleted) {
                         message.setFlag(Flags.Flag.DELETED, true)
                     }
                     count++
                 }
-                emailFolder.close(true)
+                folder.close(true)
                 store.close()
-
+            } catch (e: AuthenticationFailedException){
+                Log.i("MyTag", "AuthenticationFailedException $e" )
             } catch (e: NoSuchProviderException) {
                 Log.i("MyTag", "NoSuchProviderException $e")
             } catch (e: MessagingException) {

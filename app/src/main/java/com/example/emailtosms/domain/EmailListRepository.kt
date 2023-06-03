@@ -4,5 +4,4 @@ interface EmailListRepository {
 
     fun getEmailList(): List<EmailItem>
 
-    fun deleteEmailItem(emailItem: EmailItem)
 }
