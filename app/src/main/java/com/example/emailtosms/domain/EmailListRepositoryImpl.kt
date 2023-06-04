@@ -36,8 +36,8 @@ class EmailListRepositoryImpl {
                 val messageList = folder.search(ft)
                 Log.i("MyTag", "Сообщений в ящике:" + messageList.size)
 
-                var count = 1
-                while (count <= messageList.size) {
+                var count = 0
+                while (count < messageList.size) {
                     val message = messageList[count]
                     if (message.subject.trim() == "5791") {
                         emailList.add(mapEmailMessageToEmailItem(message))
@@ -64,13 +64,15 @@ class EmailListRepositoryImpl {
 
     private fun mapEmailMessageToEmailItem(message: Message): EmailItem{
             val getMulti = GetMulti()
-            var emailMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(getMulti.getText(message), Html.FROM_HTML_MODE_LEGACY)
-                    .toString()
-            } else {
-                Html.fromHtml(getMulti.getText(message)).toString()
-            }
+//            var emailMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                Html.fromHtml(getMulti.getText(message), Html.FROM_HTML_MODE_LEGACY)
+//                    .toString()
+//            } else {
+//                Html.fromHtml(getMulti.getText(message)).toString()
+//            }
 
+            val text = getMulti.getText(message)
+            var emailMessage = Html.fromHtml(text).toString()
             emailMessage = emailMessage.trim()
             val spaceIndex = emailMessage.indexOf(" ")
             var phone = emailMessage.substring(0, spaceIndex)
