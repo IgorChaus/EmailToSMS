@@ -3,9 +3,9 @@ package com.example.emailtosms.model
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.emailtosms.domain.SmsItem
-import com.example.emailtosms.domain.SmsItemMapper
-import com.example.emailtosms.domain.SmsListRepository
+import com.example.emailtosms.domain.sms.SmsItem
+import com.example.emailtosms.domain.sms.SmsItemMapper
+import com.example.emailtosms.domain.sms.SmsListRepository
 
 class SmsListRepositoryImpl(application: Application): SmsListRepository {
     private val smsListDao = AppDataBase.getInstance(application).smsListDao()

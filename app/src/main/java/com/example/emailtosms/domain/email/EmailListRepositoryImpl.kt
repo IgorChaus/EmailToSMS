@@ -1,6 +1,5 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.email
 
-import android.os.Build
 import android.text.Html
 import android.util.Log
 import java.util.*
@@ -62,7 +61,7 @@ class EmailListRepositoryImpl {
         return emailList
     }
 
-    private fun mapEmailMessageToEmailItem(message: Message): EmailItem{
+    private fun mapEmailMessageToEmailItem(message: Message): EmailItem {
             val getMulti = GetMulti()
 //            var emailMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 //                Html.fromHtml(getMulti.getText(message), Html.FROM_HTML_MODE_LEGACY)

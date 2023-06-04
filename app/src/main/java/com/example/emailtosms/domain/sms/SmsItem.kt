@@ -1,4 +1,4 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.sms
 
 data class SmsItem(
     var id: Int = UNDEFIND_ID,

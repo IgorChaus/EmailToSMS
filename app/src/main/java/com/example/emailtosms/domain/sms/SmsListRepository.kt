@@ -1,6 +1,7 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.sms
 
 import androidx.lifecycle.LiveData
+import com.example.emailtosms.domain.sms.SmsItem
 
 interface SmsListRepository {
 

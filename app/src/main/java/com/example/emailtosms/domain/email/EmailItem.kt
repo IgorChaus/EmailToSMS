@@ -1,4 +1,4 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.email
 
 data class EmailItem(
     val phone: String,

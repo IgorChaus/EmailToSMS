@@ -3,7 +3,7 @@ package com.example.emailtosms
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.example.emailtosms.domain.EmailListRepositoryImpl
+import com.example.emailtosms.domain.email.EmailListRepositoryImpl
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
