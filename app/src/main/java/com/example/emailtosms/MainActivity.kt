@@ -3,7 +3,7 @@ package com.example.emailtosms
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.example.emailtosms.model.email.EmailListRepositoryImpl
+import com.example.emailtosms.data.email.EmailListRepositoryImpl
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {

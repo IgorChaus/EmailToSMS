@@ -1,4 +1,4 @@
-package com.example.emailtosms.model.email;
+package com.example.emailtosms.data.email;
 
 import java.io.IOException;
 
