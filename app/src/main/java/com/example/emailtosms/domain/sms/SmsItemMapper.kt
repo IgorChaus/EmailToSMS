@@ -1,6 +1,6 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.sms
 
-import com.example.emailtosms.model.SmsItemDbModel
+import com.example.emailtosms.model.sms.SmsItemDbModel
 
 class SmsItemMapper {
 

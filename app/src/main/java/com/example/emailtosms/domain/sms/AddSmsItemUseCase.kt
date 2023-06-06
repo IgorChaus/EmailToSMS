@@ -1,4 +1,4 @@
-package com.example.emailtosms.domain
+package com.example.emailtosms.domain.sms
 
 class AddSmsItemUseCase(private val smsListRepository: SmsListRepository) {
     fun addSmsItem(smsItem: SmsItem){

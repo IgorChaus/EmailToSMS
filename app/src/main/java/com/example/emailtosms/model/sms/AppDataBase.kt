@@ -1,4 +1,4 @@
-package com.example.emailtosms.model
+package com.example.emailtosms.model.sms
 
 import android.app.Application
 import androidx.room.Database
@@ -15,7 +15,7 @@ abstract class AppDataBase: RoomDatabase() {
         private var LOCK = Any()
         private const val DB_NAME = "sms_item.db"
 
-        fun getInstance(application: Application): AppDataBase{
+        fun getInstance(application: Application): AppDataBase {
 
             INSTANCE?.let{
                 return it

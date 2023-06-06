@@ -1,4 +1,4 @@
-package com.example.emailtosms.model
+package com.example.emailtosms.model.sms
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
