@@ -1,4 +1,4 @@
-package com.example.emailtosms.model
+package com.example.emailtosms.model.sms
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
