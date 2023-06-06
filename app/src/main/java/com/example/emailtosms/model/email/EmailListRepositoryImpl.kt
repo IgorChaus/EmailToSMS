@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.Html
 import android.util.Log
 import com.example.emailtosms.domain.email.EmailItem
+import com.example.emailtosms.domain.email.EmailResponse
 import java.util.*
 import javax.mail.*
 import javax.mail.search.FlagTerm
@@ -16,7 +17,7 @@ class EmailListRepositoryImpl {
         host: String,
         port: String,
         isDeleted: Boolean
-    ):EmailResponse{
+    ): EmailResponse {
 
         synchronized(LOCK){
             val emailList = arrayListOf<EmailItem>()

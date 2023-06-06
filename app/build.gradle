@@ -56,6 +56,8 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.7.20'
     kapt 'androidx.room:room-compiler:2.4.3'
 
+    implementation 'androidx.preference:preference:1.1.1'
+
     // JavaMail
     implementation 'com.sun.mail:android-mail:1.6.6'
     implementation 'com.sun.mail:android-activation:1.6.6'

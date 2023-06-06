@@ -1,4 +1,4 @@
-package com.example.emailtosms.model.email
+package com.example.emailtosms.domain.email
 
 import com.example.emailtosms.domain.email.EmailItem
 
