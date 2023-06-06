@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.Html
 import android.util.Log
 import com.example.emailtosms.domain.email.EmailItem
+import com.sun.mail.iap.Response
 import java.util.*
 import javax.mail.*
 import javax.mail.search.FlagTerm
@@ -18,10 +19,10 @@ class EmailListRepositoryImpl {
         host: String,
         port: String,
         isDeleted: Boolean
-    ):List<EmailItem>{
+    ):EmailResponse{
 
         val emailList = arrayListOf<EmailItem>()
-        var response: String? = null
+        var response: String? = OK
 
         val properties = Properties()
         properties["mail.imap.host"] = host
@@ -52,16 +53,15 @@ class EmailListRepositoryImpl {
             folder.close(true)
             store.close()
         } catch (e: AuthenticationFailedException){
-            Log.i("MyTag", "AuthenticationFailedException $e" )
+            response = "AuthenticationFailedException $e"
         } catch (e: NoSuchProviderException) {
-            Log.i("MyTag", "NoSuchProviderException $e")
+            response = "NoSuchProviderException $e"
         } catch (e: MessagingException) {
-            Log.i("MyTag", "MessagingException $e")
+            response = "MessagingException $e"
         } catch (e: Exception) {
-            Log.i("MyTag", "Exception in EmailListRepositoryImpl $e")
+            response = "Exception in EmailListRepositoryImpl $e"
         }
-        Log.i("MyTag","emailList $emailList")
-        return emailList
+        return EmailResponse(emailList, response)
     }
 
     private fun mapEmailMessageToEmailItem(message: Message): EmailItem {
@@ -87,6 +87,10 @@ class EmailListRepositoryImpl {
             var smsMessage = emailMessage.substring(spaceIndex).trim()
             smsMessage = smsMessage.replace("\n", "")
             return EmailItem(phone, smsMessage)
+    }
+
+    companion object{
+        val OK = null
     }
 
 }
