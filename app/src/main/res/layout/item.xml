@@ -10,23 +10,24 @@
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
         android:text="TextView"
-        android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="01.03.2023 10:00:37" />
+        tools:text="01.03" />
 
     <TextView
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_date"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="+79114509981" />
 
@@ -38,7 +39,7 @@
         android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_phone"
         tools:text="Ваш заказ №123 готов к выдаче" />
