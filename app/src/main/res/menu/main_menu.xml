@@ -2,14 +2,16 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/clear_log"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="Очистить лог"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/sms_screen"
+        android:icon="@android:drawable/stat_notify_chat"
+        android:title="SMS" />
     <item
-        android:id="@+id/settings"
+        android:id="@+id/email_screen"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Email" />
+    <item
+        android:id="@+id/settins_screen"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="Настройки"
-        app:showAsAction="ifRoom" />
+        android:title="Settings" />
 
 </menu>
