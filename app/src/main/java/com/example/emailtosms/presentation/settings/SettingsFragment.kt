@@ -1,4 +1,4 @@
-package com.example.emailtosms.presentation
+package com.example.emailtosms.presentation.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

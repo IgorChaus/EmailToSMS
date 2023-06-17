@@ -1,4 +1,4 @@
-package com.example.emailtosms.presentation
+package com.example.emailtosms.presentation.sms
 
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +17,14 @@ class SmsListAdapter: RecyclerView.Adapter<SmsListAdapter.SmsItemViewHolder>() {
         }
 
     class SmsItemViewHolder(view: View): RecyclerView.ViewHolder(view){
-        val tvPhone = view.findViewById<TextView>(R.id.tv_phone)
+        val tvPhone = view.findViewById<TextView>(R.id.tv_address)
         val tvDate = view.findViewById<TextView>(R.id.tv_date)
-        val tvMessage = view.findViewById<TextView>(R.id.tv_message)
+        val tvMessage = view.findViewById<TextView>(R.id.tv_subject)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmsItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item,
+            R.layout.item_sms,
             parent,
             false
         )

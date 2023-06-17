@@ -2,8 +2,9 @@ package com.example.emailtosms
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.emailtosms.presentation.SmsListScreen
-import com.example.emailtosms.presentation.SettingsFragment
+import com.example.emailtosms.presentation.email.EmailListScreen
+import com.example.emailtosms.presentation.sms.SmsListScreen
+import com.example.emailtosms.presentation.settings.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -16,10 +17,11 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.sms_screen -> {
-                    launchListScreen()
+                    launchSmsListScreen()
                     true
                 }
                 R.id.email_screen -> {
+                    launchEmailListScreen()
                     true
                 }
                 R.id.settins_screen -> {
@@ -38,9 +40,16 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun launchListScreen(){
+    fun launchSmsListScreen(){
         supportFragmentManager.beginTransaction()
             .replace(R.id.container_activity, SmsListScreen.getInstance())
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun launchEmailListScreen(){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container_activity, EmailListScreen.getInstance())
             .addToBackStack(null)
             .commit()
     }
