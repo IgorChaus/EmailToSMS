@@ -30,7 +30,11 @@ class EmailListScreen: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        viewModel = ViewModelProvider(this).get(EmailViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+        ).get(EmailViewModel::class.java)
+
         viewModel.emailResponse.observe(viewLifecycleOwner){
             if (it.responseCode == EmailListRepositoryTest.OK) {
                 emailListAdapter.emailList = it.emailItemList

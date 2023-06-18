@@ -1,5 +1,6 @@
 package com.example.emailtosms.data.email
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.emailtosms.domain.email.EmailItem
@@ -55,6 +56,7 @@ class EmailListRepositoryTest: EmailListRepository {
         port: String,
         isDeleted: Boolean
     ): EmailResponse {
+
         val emailList = arrayListOf<EmailItem>()
         var response: String? = EmailListRepositoryImpl.OK
 
@@ -80,6 +82,7 @@ class EmailListRepositoryTest: EmailListRepository {
         host: String,
         port: String
     ): LiveData<EmailResponse> {
+        Log.i("MyTag","Данные: $user $password")
         emailResponseLD.value = EmailResponse(messageList, OK)
         return emailResponseLD
     }

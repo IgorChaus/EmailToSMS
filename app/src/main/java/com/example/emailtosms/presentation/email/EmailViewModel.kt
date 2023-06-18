@@ -1,18 +1,23 @@
 package com.example.emailtosms.presentation.email
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.preference.PreferenceManager
 import com.example.emailtosms.data.email.EmailListRepositoryTest
 import com.example.emailtosms.domain.email.GetEmailListUseCase
 
-class EmailViewModel: ViewModel() {
+class EmailViewModel(application: Application): AndroidViewModel(application) {
+    private val context = application
     private val repository = EmailListRepositoryTest()
 
     private val getEmailListUseCase = GetEmailListUseCase(repository)
+    private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+    private val user = sharePref.getString("email", "") ?: ""
+    private val password = sharePref.getString("password","") ?: ""
+    private val host = sharePref.getString("server","") ?: ""
+    private val port = sharePref.getString("port","") ?: ""
+    private val message_action = sharePref.getString("message_action", "") ?: ""
+    private val token = sharePref.getString("token","") ?:""
 
-    val emailResponse = getEmailListUseCase.getEmailList(
-        "alarm-parking@mail.ru",
-        "chusya12",
-        "imap.mail.ru",
-        "995"
-    )
+    val emailResponse = getEmailListUseCase.getEmailList(user, password, host, port)
 }
