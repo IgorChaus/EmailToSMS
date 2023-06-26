@@ -160,24 +160,6 @@ class EmailListRepositoryImpl: EmailListRepository {
         return EmailItem(date, address, subject,  emailMessage)
     }
 
-    private fun parsingMessage(message: String): Map<String,String>{
-        val emailMessage = message.trim()
-        val spaceIndex = emailMessage.indexOf(" ")
-        var phone = emailMessage.substring(0, spaceIndex)
-
-        val re = Regex("[^0-9]")
-        if (phone[0] == '+') {
-            phone = re.replace(phone, "")
-            phone = "+ $phone"
-        } else {
-            phone = re.replace(phone, "")
-        }
-
-        var smsMessage = emailMessage.substring(spaceIndex).trim()
-        smsMessage = smsMessage.replace("\n", "")
-
-        return mapOf("phone" to phone, "message" to smsMessage)
-    }
 
     companion object {
         val OK = null

@@ -1,6 +1,6 @@
 package com.example.emailtosms.domain.email
 
-class GetEmailListWithToken(private val emailListRepository: EmailListRepository) {
+class GetEmailListWithTokenUseCase(private val emailListRepository: EmailListRepository) {
     fun getEmailListWithToken(
         user: String,
         password: String,

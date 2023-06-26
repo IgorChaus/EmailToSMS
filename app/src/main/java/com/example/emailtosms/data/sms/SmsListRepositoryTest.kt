@@ -6,7 +6,7 @@ import com.example.emailtosms.domain.sms.SmsItem
 import com.example.emailtosms.domain.sms.SmsListRepository
 import kotlin.random.Random
 
-class SmsListRepositoryTest: SmsListRepository {
+object SmsListRepositoryTest: SmsListRepository {
 
     private val smsListLD = MutableLiveData<List<SmsItem>>()
 
@@ -15,7 +15,7 @@ class SmsListRepositoryTest: SmsListRepository {
     private var autoIncrementId = 0
 
     init{
-        for(i in 0 until 20){
+        for(i in 0 until 5){
             val order = Random.nextInt(1,500)
             val phone1 = Random.nextInt(1000,9999)
             val phone2 = Random.nextInt(1000,9999)

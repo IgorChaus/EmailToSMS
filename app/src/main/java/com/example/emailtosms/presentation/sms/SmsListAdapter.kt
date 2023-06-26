@@ -1,5 +1,6 @@
 package com.example.emailtosms.presentation.sms
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,9 @@ class SmsListAdapter: RecyclerView.Adapter<SmsListAdapter.SmsItemViewHolder>() {
         holder.tvPhone.text = smsItem.phone
     }
 
-    override fun getItemCount() = smsList.size
+    override fun getItemCount(): Int {
+        Log.i("MyTag","smsList.size: ${smsList.size}")
+        return smsList.size
+    }
 
 }

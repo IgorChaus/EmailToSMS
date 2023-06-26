@@ -38,7 +38,13 @@ class EmailListScreen: Fragment() {
         viewModel.emailResponse.observe(viewLifecycleOwner){
             if (it.responseCode == EmailListRepositoryTest.OK) {
                 emailListAdapter.emailList = it.emailItemList
+
             }
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.checkEmail()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
     }

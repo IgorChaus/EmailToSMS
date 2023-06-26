@@ -8,8 +8,7 @@ import com.example.emailtosms.domain.email.GetEmailListUseCase
 
 class EmailViewModel(application: Application): AndroidViewModel(application) {
     private val context = application
-    private val repository = EmailListRepositoryTest()
-
+    private val repository = EmailListRepositoryTest
     private val getEmailListUseCase = GetEmailListUseCase(repository)
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
     private val user = sharePref.getString("email", "") ?: ""
@@ -19,5 +18,9 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     private val message_action = sharePref.getString("message_action", "") ?: ""
     private val token = sharePref.getString("token","") ?:""
 
-    val emailResponse = getEmailListUseCase.getEmailList(user, password, host, port)
+    var emailResponse = getEmailListUseCase.getEmailList(user, password, host, port)
+
+    fun checkEmail(){
+        emailResponse = getEmailListUseCase.getEmailList(user, password, host, port)
+    }
 }

@@ -29,9 +29,17 @@ class SmsListScreen: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
-        viewModel = ViewModelProvider(this).get(SmsViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+        ).get(SmsViewModel::class.java)
         viewModel.smsList.observe(viewLifecycleOwner){
             smsListAdapter.smsList = it
+        }
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.checkEmail()
+            binding.swipeRefreshLayout.isRefreshing = false
         }
 
     }
