@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sms_screen"
+        android:icon="@android:drawable/stat_notify_chat"
+        android:title="SMS" />
+    <item
+        android:id="@+id/email_screen"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="Email" />
+    <item
+        android:id="@+id/settins_screen"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Settings" />
+
+</menu>

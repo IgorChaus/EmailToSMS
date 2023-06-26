@@ -1,9 +1,10 @@
-package com.example.emailtosms.model.sms
+package com.example.emailtosms.data.sms
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.example.emailtosms.data.sms.SmsItemDbModel
 
 @Dao
 interface SmsListDao {

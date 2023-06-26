@@ -1,8 +1,12 @@
 package com.example.emailtosms.domain.email
 
-import com.example.emailtosms.domain.email.EmailItem
-import com.example.emailtosms.domain.email.EmailListRepository
+import androidx.lifecycle.LiveData
 
 class GetEmailListUseCase(private val emailListRepository: EmailListRepository) {
-        fun getEmailList(): List<EmailItem> = emailListRepository.getEmailList()
-    }
+    fun getEmailList(
+        user: String,
+        password: String,
+        host: String,
+        port: String
+    ): LiveData<EmailResponse> = emailListRepository.getEmailList(user, password, host, port)
+}
