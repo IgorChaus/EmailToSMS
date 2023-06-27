@@ -7,7 +7,7 @@ interface SmsListRepository {
 
     fun getSmsList(): LiveData<List<SmsItem>>
 
-    fun addSmsItem(smsItem: SmsItem)
+    suspend fun addSmsItem(smsItem: SmsItem)
 
-    fun deleteAllSmsItems()
+    suspend fun deleteAllSmsItems()
 }

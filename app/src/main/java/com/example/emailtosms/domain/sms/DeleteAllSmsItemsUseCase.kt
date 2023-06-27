@@ -1,7 +1,7 @@
 package com.example.emailtosms.domain.sms
 
 class DeleteAllSmsItemsUseCase(private val smsListRepository: SmsListRepository) {
-    fun deleteAllSmsItems(){
+    suspend fun deleteAllSmsItems(){
         smsListRepository.deleteAllSmsItems()
     }
 }

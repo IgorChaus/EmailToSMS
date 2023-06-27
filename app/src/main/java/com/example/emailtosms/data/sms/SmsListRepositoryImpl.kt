@@ -18,11 +18,11 @@ class SmsListRepositoryImpl(application: Application): SmsListRepository {
     }
 
 
-    override fun addSmsItem(smsItem: SmsItem) {
+    override suspend fun addSmsItem(smsItem: SmsItem) {
         smsListDao.addSmsItem(mapper.mapEntityToDbModel(smsItem))
     }
 
-    override fun deleteAllSmsItems() {
+    override suspend fun deleteAllSmsItems() {
         smsListDao.deleteAllSmsItems()
     }
 }
