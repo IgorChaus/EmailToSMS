@@ -1,12 +1,11 @@
 package com.example.emailtosms.presentation.settings
 
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.emailtosms.R
-import com.example.emailtosms.presentation.sms.SmsViewModel
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -21,13 +20,28 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(SettingsViewModel::class.java)
 
+        setClearLogListener()
+    }
+
+    fun setClearLogListener(){
         val clearLogButton = findPreference<Preference>("clear_log")
         clearLogButton?.setOnPreferenceClickListener {
-            viewModel.deleteAllSmsItems()
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Удаление Лога")
+            builder.setMessage(
+                "Вы собираетесь удалить Лог приложения. Его удаление повлечет за собой " +
+                        "удаление всей истории отправленных сообщений.\n\nВы уверены?"
+            )
+            builder.setNegativeButton(
+                "Нет"
+            ) { dialog, which -> dialog.cancel() }
+
+            builder.setPositiveButton("Да") { dialog, which ->
+                viewModel.deleteAllSmsItems()
+            }
+            builder.show()
             true
         }
-
-
     }
 
 
