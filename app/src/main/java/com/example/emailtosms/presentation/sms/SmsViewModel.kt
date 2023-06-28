@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
-import com.example.emailtosms.data.email.EmailListRepositoryTest
+import com.example.emailtosms.data.email.EmailListRepositoryImpl
 import com.example.emailtosms.data.sms.SmsListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
@@ -21,7 +21,7 @@ import java.util.*
 class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private val context = application
     private val smsRepository = SmsListRepositoryImpl(application)
-    private val emailRepository = EmailListRepositoryTest
+    private val emailRepository = EmailListRepositoryImpl()
 
     private val getSmsListUseCase = GetSmsListUseCase(smsRepository)
     private val addSmsItemUseCase = AddSmsItemUseCase(smsRepository)
@@ -43,9 +43,16 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     fun checkEmail() {
         viewModelScope.launch(Dispatchers.IO) {
             emailResponse =
-                getEmailListWithTokenUseCase.getEmailListWithToken(user, password, host, port, true)
+                getEmailListWithTokenUseCase.getEmailListWithToken(
+                    user,
+                    password,
+                    host,
+                    port,
+                    token,
+                    true
+                )
 
-            if (emailResponse.responseCode == EmailListRepositoryTest.OK) {
+            if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
                 for (item in emailResponse.emailItemList) {
                     val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
                     val date = item.date?.let { dateFormat.format(it) } ?: ""

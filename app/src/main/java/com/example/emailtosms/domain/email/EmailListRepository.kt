@@ -1,21 +1,20 @@
 package com.example.emailtosms.domain.email
 
-import androidx.lifecycle.LiveData
-
 interface EmailListRepository {
 
-    fun getEmailList(
+    suspend fun getEmailList(
         user: String,
         password: String,
         host: String,
         port: String
-    ): LiveData<EmailResponse>
+    ): EmailResponse
 
-    fun getEmailListWithToken(
+    suspend fun getEmailListWithToken(
         user: String,
         password: String,
         host: String,
         port: String,
+        token: String,
         isDeleted: Boolean
     ): EmailResponse
 
