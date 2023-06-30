@@ -2,9 +2,6 @@ package com.example.emailtosms.data.email
 
 import android.os.Build
 import android.text.Html
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.email.EmailListRepository
 import com.example.emailtosms.domain.email.EmailResponse
@@ -14,13 +11,13 @@ import javax.mail.internet.InternetAddress
 import javax.mail.search.FlagTerm
 
 class EmailListRepositoryImpl: EmailListRepository {
-    private val emailResponseLD = MutableLiveData<EmailResponse>()
 
-    override fun getEmailListWithToken(
+    override suspend fun getEmailListWithToken(
         user: String,
         password: String,
         host: String,
         port: String,
+        token: String,
         isDeleted: Boolean
     ): EmailResponse {
 
@@ -40,21 +37,18 @@ class EmailListRepositoryImpl: EmailListRepository {
 
                 val ft = FlagTerm(Flags(Flags.Flag.SEEN), false)
                 val messageList = folder.search(ft)
-                Log.i("MyTag", "Сообщений в ящике:" + messageList.size)
 
-                var count = 0
-                while (count < messageList.size) {
-                    val message = messageList[count]
+                for(message in messageList){
                     val subject = message.subject.trim()
-                    if (subject == "5791") {
+                    if (subject == token) {
                         val item = mapEmailMessageToEmailItem(message)
                         emailList.add(item)
                         if (isDeleted) {
                             message.setFlag(Flags.Flag.DELETED, true)
                         }
                     }
-                    count++
                 }
+
                 folder.close(true)
                 store.close()
             } catch (e: AuthenticationFailedException){
@@ -70,12 +64,12 @@ class EmailListRepositoryImpl: EmailListRepository {
         }
     }
 
-    override fun getEmailList(
+    override suspend fun getEmailList(
         user: String,
         password: String,
         host: String,
         port: String
-    ): LiveData<EmailResponse> {
+    ): EmailResponse {
 
         synchronized(LOCK){
             val emailList = arrayListOf<EmailItem>()
@@ -89,20 +83,13 @@ class EmailListRepositoryImpl: EmailListRepository {
                 val store = Session.getDefaultInstance(properties).getStore("imaps")
                 store.connect(host, user, password)
                 val folder = store.getFolder("INBOX")
-                folder.open(Folder.READ_WRITE)
-
-                val ft = FlagTerm(Flags(Flags.Flag.SEEN), false)
-                val messageList = folder.search(ft)
-                Log.i("MyTag", "Сообщений в ящике:" + messageList.size)
-
-                var count = 0
-                while (count < messageList.size) {
-                    val message = messageList[count]
+                folder.open(Folder.READ_ONLY)
+                val messageList = folder.messages
+                for (message in messageList){
                     val item = mapEmailMessageToEmailItem(message)
                     emailList.add(item)
-                    count++
                 }
-                folder.close(true)
+                folder.close(false)
                 store.close()
             } catch (e: AuthenticationFailedException){
                 response = "AuthenticationFailedException $e"
@@ -113,8 +100,8 @@ class EmailListRepositoryImpl: EmailListRepository {
             } catch (e: Exception) {
                 response = "Exception in EmailListRepositoryImpl $e"
             }
-            emailResponseLD.value = EmailResponse(emailList, response)
-            return emailResponseLD
+            EmailResponse(emailList, response)
+            return EmailResponse(emailList, response)
         }
     }
 
