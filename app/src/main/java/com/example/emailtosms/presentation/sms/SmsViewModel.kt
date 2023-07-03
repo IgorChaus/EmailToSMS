@@ -2,6 +2,8 @@ package com.example.emailtosms.presentation.sms
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.emailtosms.data.email.EmailListRepositoryImpl
@@ -38,10 +40,15 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
     val smsList = getSmsListUseCase.getSmsList()
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
+
     private lateinit var emailResponse: EmailResponse
 
     fun checkEmail() {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.postValue(true)
             emailResponse =
                 getEmailListWithTokenUseCase.getEmailListWithToken(
                     user,
@@ -62,6 +69,7 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
                     addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
                 }
             }
+            _loading.postValue(false)
         }
     }
 

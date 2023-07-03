@@ -33,13 +33,17 @@ class SmsListScreen: Fragment() {
             requireActivity(),
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(SmsViewModel::class.java)
+
         viewModel.smsList.observe(viewLifecycleOwner){
             smsListAdapter.smsList = it
         }
 
+        viewModel.loading.observe( viewLifecycleOwner){
+            binding.swipeRefreshLayout.isRefreshing = it
+        }
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.checkEmail()
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
     }

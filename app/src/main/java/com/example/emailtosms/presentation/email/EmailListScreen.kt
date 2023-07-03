@@ -41,9 +41,12 @@ class EmailListScreen: Fragment() {
             }
         }
 
+        viewModel.loading.observe( viewLifecycleOwner){
+            binding.swipeRefreshLayout.isRefreshing = it
+        }
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.checkEmail()
-            binding.swipeRefreshLayout.isRefreshing = false
         }
 
     }
