@@ -1,6 +1,7 @@
 package com.example.emailtosms.presentation.sms
 
 import android.app.Application
+import android.telephony.SmsManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

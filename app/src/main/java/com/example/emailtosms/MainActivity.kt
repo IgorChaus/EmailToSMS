@@ -1,10 +1,13 @@
 package com.example.emailtosms
 
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.example.emailtosms.presentation.email.EmailListScreen
-import com.example.emailtosms.presentation.sms.SmsListScreen
 import com.example.emailtosms.presentation.settings.SettingsFragment
+import com.example.emailtosms.presentation.sms.SmsListScreen
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        askPermissionForSms()
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNav.setOnItemSelectedListener {
@@ -33,27 +37,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun launchSettingsScreen(){
+    private fun launchSettingsScreen(){
         supportFragmentManager.beginTransaction()
             .replace(R.id.container_activity, SettingsFragment.getInstance())
             .addToBackStack(null)
             .commit()
     }
 
-    fun launchSmsListScreen(){
+    private fun launchSmsListScreen(){
         supportFragmentManager.beginTransaction()
             .replace(R.id.container_activity, SmsListScreen.getInstance())
             .addToBackStack(null)
             .commit()
     }
 
-    fun launchEmailListScreen(){
+    private fun launchEmailListScreen(){
         supportFragmentManager.beginTransaction()
             .replace(R.id.container_activity, EmailListScreen.getInstance())
             .addToBackStack(null)
             .commit()
     }
 
+    private fun askPermissionForSms(){
+
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.SEND_SMS
+            ) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(Manifest.permission.SEND_SMS),
+                MY_PERMISSIONS_REQUEST_SEND_SMS
+            )
+        }
+    }
+
+    companion object{
+        private const val MY_PERMISSIONS_REQUEST_SEND_SMS = 1
+    }
 
 }
 
