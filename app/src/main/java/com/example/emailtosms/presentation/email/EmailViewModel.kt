@@ -26,15 +26,22 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     val emailResponse: LiveData<EmailResponse>
         get() = _emailResponse
 
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            _loading.postValue(true)
             _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
+            _loading.postValue(false)
         }
     }
 
     fun checkEmail(){
         viewModelScope.launch(Dispatchers.IO) {
             _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
+            _loading.postValue(false)
         }
     }
 }
