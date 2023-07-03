@@ -40,10 +40,10 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <ListPreference
             android:title="График синхронизации"
-            app:defaultValue="Каждые 15 минут"
+            app:defaultValue="Не проверять"
             app:entries="@array/time_interval"
             app:entryValues="@array/time_interval"
-            app:key="time"
+            app:key="check_interval"
             app:title="График синхронизации"
             app:useSimpleSummaryProvider="true" />
 

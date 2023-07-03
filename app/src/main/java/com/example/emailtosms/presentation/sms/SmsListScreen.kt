@@ -30,7 +30,7 @@ class SmsListScreen: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(SmsViewModel::class.java)
         viewModel.smsList.observe(viewLifecycleOwner){

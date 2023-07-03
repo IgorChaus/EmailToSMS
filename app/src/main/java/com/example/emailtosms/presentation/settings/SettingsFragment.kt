@@ -5,7 +5,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
 import com.example.emailtosms.R
+import com.example.emailtosms.data.workers.RefreshEmailWorker
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -21,9 +24,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         ).get(SettingsViewModel::class.java)
 
         setClearLogListener()
+
+        val checkEmailInterval = findPreference<Preference>("check_interval")
+        checkEmailInterval?.setOnPreferenceChangeListener { preference, newValue ->
+            when(newValue){
+                "Не проверять"      -> cancelWorker()
+                "Каждые 15 минут"   -> startWorker(15)
+                "Каждые 30 минут"   -> startWorker(30)
+                "Каждый час"        -> startWorker(60)
+            }
+            true
+        }
+
     }
 
-    fun setClearLogListener(){
+    private fun setClearLogListener(){
         val clearLogButton = findPreference<Preference>("clear_log")
         clearLogButton?.setOnPreferenceClickListener {
             val builder = AlertDialog.Builder(requireContext())
@@ -44,6 +59,21 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private fun startWorker(intervalInMinutes: Long){
+        val application = requireActivity().application
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniquePeriodicWork(
+            RefreshEmailWorker.NAME,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            RefreshEmailWorker.makeRequest(intervalInMinutes)
+        )
+    }
+
+    private fun cancelWorker() {
+        val application = requireActivity().application
+        val workManager = WorkManager.getInstance(application)
+        workManager.cancelUniqueWork(RefreshEmailWorker.NAME)
+    }
 
     companion object {
         fun getInstance() = SettingsFragment()

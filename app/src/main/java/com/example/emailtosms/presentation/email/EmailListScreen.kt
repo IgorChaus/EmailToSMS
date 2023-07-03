@@ -31,7 +31,7 @@ class EmailListScreen: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         viewModel = ViewModelProvider(
-            this,
+            requireActivity(),
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(EmailViewModel::class.java)
 
