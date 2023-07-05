@@ -1,7 +1,10 @@
 package com.example.emailtosms.presentation.sms
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
 import android.telephony.SmsManager
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,29 +51,46 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private lateinit var emailResponse: EmailResponse
 
     fun checkEmail() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _loading.postValue(true)
-            emailResponse =
-                getEmailListWithTokenUseCase.getEmailListWithToken(
-                    user,
-                    password,
-                    host,
-                    port,
-                    token,
-                    true
-                )
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
+            PackageManager.PERMISSION_GRANTED) {
+            viewModelScope.launch(Dispatchers.IO) {
+                _loading.postValue(true)
+                emailResponse =
+                    getEmailListWithTokenUseCase.getEmailListWithToken(
+                        user,
+                        password,
+                        host,
+                        port,
+                        token,
+                        true
+                    )
 
-            if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
-                for (item in emailResponse.emailItemList) {
-                    val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-                    val date = item.date?.let { dateFormat.format(it) } ?: ""
-                    val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
-                    val phone = result["phone"] ?: ""
-                    val message = result["message"] ?: ""
-                    addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
+                if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
+                    for (item in emailResponse.emailItemList) {
+                        val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
+                        val date = item.date?.let { dateFormat.format(it) } ?: ""
+                        val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
+                        val phone = result["phone"] ?: ""
+                        val message = result["message"] ?: ""
+                        addSmsItemUseCase.addSmsItem(
+                            SmsItem(
+                                SmsItem.UNDEFIND_ID,
+                                date,
+                                phone,
+                                message
+                            )
+                        )
+                        SmsManager.getDefault().sendTextMessage(
+                            phone,
+                            null,
+                            message,
+                            null,
+                            null
+                        )
+                    }
                 }
+                _loading.postValue(false)
             }
-            _loading.postValue(false)
         }
     }
 

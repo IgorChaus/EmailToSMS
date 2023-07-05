@@ -1,6 +1,9 @@
 package com.example.emailtosms.data.workers
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequest
@@ -17,10 +20,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class RefreshEmailWorker(
-    context: Context,
+    _context: Context,
     workerParameters: WorkerParameters
-): CoroutineWorker(context, workerParameters) {
+): CoroutineWorker(_context, workerParameters) {
 
+    private val context = _context
     private val smsRepository = SmsListRepositoryImpl(context)
     private val emailRepository = EmailListRepositoryImpl()
 
@@ -37,24 +41,27 @@ class RefreshEmailWorker(
     private val token = sharePref.getString("token", "") ?: ""
 
     override suspend fun doWork(): Result {
-        val emailResponse =
-            getEmailListWithTokenUseCase.getEmailListWithToken(
-                user,
-                password,
-                host,
-                port,
-                token,
-                true
-            )
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
+            PackageManager.PERMISSION_GRANTED) {
+            val emailResponse =
+                getEmailListWithTokenUseCase.getEmailListWithToken(
+                    user,
+                    password,
+                    host,
+                    port,
+                    token,
+                    true
+                )
 
-        if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
-            for (item in emailResponse.emailItemList) {
-                val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-                val date = item.date?.let { dateFormat.format(it) } ?: ""
-                val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
-                val phone = result["phone"] ?: ""
-                val message = result["message"] ?: ""
-                addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
+            if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
+                for (item in emailResponse.emailItemList) {
+                    val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
+                    val date = item.date?.let { dateFormat.format(it) } ?: ""
+                    val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
+                    val phone = result["phone"] ?: ""
+                    val message = result["message"] ?: ""
+                    addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
+                }
             }
         }
         return Result.success()

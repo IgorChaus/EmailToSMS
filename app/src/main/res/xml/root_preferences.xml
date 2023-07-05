@@ -11,7 +11,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            android:defaultValue="chusya12"
+            android:defaultValue="rQQz8Lq5zcTSdkPpb6W7"
             android:key="password"
             android:selectAllOnFocus="false"
             android:singleLine="false"

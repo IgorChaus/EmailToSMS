@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        askPermissionForSms()
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNav.setOnItemSelectedListener {
@@ -35,6 +34,8 @@ class MainActivity : AppCompatActivity() {
                 else -> throw RuntimeException("Illegal choose")
             }
         }
+
+        askPermissionForSms()
     }
 
     private fun launchSettingsScreen(){
