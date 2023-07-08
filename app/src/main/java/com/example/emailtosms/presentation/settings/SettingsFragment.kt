@@ -1,7 +1,14 @@
 package com.example.emailtosms.presentation.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
@@ -14,6 +21,9 @@ import com.example.emailtosms.data.workers.RefreshEmailWorker
 class SettingsFragment : PreferenceFragmentCompat() {
 
     private lateinit var viewModel: SettingsViewModel
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+    private var preferenceInterval: Preference? = null
+    private var interval: Any = "Каждые 15 минут"
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
@@ -24,18 +34,81 @@ class SettingsFragment : PreferenceFragmentCompat() {
         ).get(SettingsViewModel::class.java)
 
         setClearLogListener()
+        registerPermissionListener()
 
-        val checkEmailInterval = findPreference<Preference>("check_interval")
-        checkEmailInterval?.setOnPreferenceChangeListener { preference, newValue ->
-            when(newValue){
-                "Не проверять"      -> cancelWorker()
-                "Каждые 15 минут"   -> startWorker(15)
-                "Каждые 30 минут"   -> startWorker(30)
-                "Каждый час"        -> startWorker(60)
+        preferenceInterval = findPreference<Preference>("check_interval")
+        preferenceInterval?.let{
+            it.setOnPreferenceChangeListener { _, newValue ->
+                handleChoice(newValue)
+                true
             }
-            true
+            checkPermission()
         }
+    }
 
+    private fun checkPermission(){
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.SEND_SMS) !=
+            PackageManager.PERMISSION_GRANTED) {
+            preferenceInterval?.setSummaryProvider {
+                "Не проверять"
+            }
+            cancelWorker()
+        }
+    }
+
+    private fun handleChoice(choice: Any){
+        if (choice == "Не проверять"){
+            cancelWorker()
+        } else {
+            interval = choice
+            when {
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.SEND_SMS)
+                        == PackageManager.PERMISSION_GRANTED -> {
+                    startService()
+                }
+                shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "Для отправки SMS сообщений приложению необходимо разрешение на отправку SMS",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    preferenceInterval?.setSummaryProvider {
+                        "Не проверять"
+                    }
+                    cancelWorker()
+                }
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.SEND_SMS)
+                }
+            }
+        }
+    }
+
+    private fun startService(){
+        when(interval){
+            "Каждые 15 минут"   -> startWorker(15)
+            "Каждые 30 минут"   -> startWorker(30)
+            "Каждый час"        -> startWorker(60)
+            else                -> cancelWorker()
+        }
+    }
+
+    private fun registerPermissionListener(){
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            if(it){
+                startService()
+            }else{
+                Toast.makeText(
+                    requireContext(),
+                    "Отправка SMS выполняться не будет",
+                    Toast.LENGTH_LONG
+                ).show()
+                preferenceInterval?.setSummaryProvider {
+                    "Не проверять"
+                }
+                cancelWorker()
+            }
+        }
     }
 
     private fun setClearLogListener(){

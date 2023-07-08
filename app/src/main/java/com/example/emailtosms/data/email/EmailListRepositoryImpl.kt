@@ -2,6 +2,7 @@ package com.example.emailtosms.data.email
 
 import android.os.Build
 import android.text.Html
+import android.util.Log
 import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.email.EmailListRepository
 import com.example.emailtosms.domain.email.EmailResponse

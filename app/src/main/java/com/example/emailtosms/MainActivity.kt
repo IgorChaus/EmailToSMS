@@ -1,10 +1,7 @@
 package com.example.emailtosms
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import com.example.emailtosms.presentation.email.EmailListScreen
 import com.example.emailtosms.presentation.settings.SettingsFragment
 import com.example.emailtosms.presentation.sms.SmsListScreen
@@ -35,7 +32,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        askPermissionForSms()
     }
 
     private fun launchSettingsScreen(){
@@ -57,25 +53,6 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.container_activity, EmailListScreen.getInstance())
             .addToBackStack(null)
             .commit()
-    }
-
-    private fun askPermissionForSms(){
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.SEND_SMS
-            ) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(Manifest.permission.SEND_SMS),
-                MY_PERMISSIONS_REQUEST_SEND_SMS
-            )
-        }
-    }
-
-    companion object{
-        private const val MY_PERMISSIONS_REQUEST_SEND_SMS = 1
     }
 
 }

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -38,6 +37,7 @@ class SmsListScreen: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        registerPermissionListener()
         viewModel = ViewModelProvider(
             requireActivity(),
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
@@ -52,7 +52,7 @@ class SmsListScreen: Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.checkEmail()
+            checkEmail()
         }
 
     }
@@ -66,17 +66,17 @@ class SmsListScreen: Fragment() {
         }
     }
 
-    fun checkSmsPermission(): Boolean{
-        var permission = false
-        when{
+    fun checkEmail(){
+        when {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.SEND_SMS)
-                == PackageManager.PERMISSION_GRANTED -> {
-                permission = true
+                    == PackageManager.PERMISSION_GRANTED -> {
+                viewModel.checkEmail(true)
             }
             shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) -> {
+                viewModel.checkEmail(false)
                 Toast.makeText(
                     requireContext(),
-                    "Без этого разрешения SMS не приложение не сможет отправлять SMS",
+                    "Для отправки SMS сообщений приложению необходимо разрешение на отправку SMS",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -84,12 +84,20 @@ class SmsListScreen: Fragment() {
                 requestPermissionLauncher.launch(Manifest.permission.SEND_SMS)
             }
         }
-        return permission
     }
 
     fun registerPermissionListener(){
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
-
+            if(it){
+                viewModel.checkEmail(true)
+            }else{
+                viewModel.checkEmail(false)
+                Toast.makeText(
+                    requireContext(),
+                    "Отправка SMS выполняться не будет",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

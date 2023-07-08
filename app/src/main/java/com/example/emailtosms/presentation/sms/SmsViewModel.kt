@@ -1,10 +1,7 @@
 package com.example.emailtosms.presentation.sms
 
-import android.Manifest
 import android.app.Application
-import android.content.pm.PackageManager
 import android.telephony.SmsManager
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -35,12 +32,12 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "") ?: ""
-    private val password = sharePref.getString("password", "") ?: ""
-    private val host = sharePref.getString("server", "") ?: ""
-    private val port = sharePref.getString("port", "") ?: ""
+    private val user = sharePref.getString("email", "alarm-parking@mail.ru") ?: ""
+    private val password = sharePref.getString("password","rQQz8Lq5zcTSdkPpb6W7") ?: ""
+    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
+    private val port = sharePref.getString("port","995") ?: ""
     private val message_action = sharePref.getString("message_action", "") ?: ""
-    private val token = sharePref.getString("token", "") ?: ""
+    private val token = sharePref.getString("token", "1111") ?: ""
 
     val smsList = getSmsListUseCase.getSmsList()
 
@@ -50,11 +47,9 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
     private lateinit var emailResponse: EmailResponse
 
-    fun checkEmail() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
-            PackageManager.PERMISSION_GRANTED) {
-            viewModelScope.launch(Dispatchers.IO) {
-                _loading.postValue(true)
+    fun checkEmail(permission: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (permission) {
                 emailResponse =
                     getEmailListWithTokenUseCase.getEmailListWithToken(
                         user,
@@ -89,8 +84,8 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
                         )
                     }
                 }
-                _loading.postValue(false)
             }
+            _loading.postValue(false)
         }
     }
 

@@ -17,10 +17,10 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     private val repository = EmailListRepositoryImpl()
     private val getEmailListUseCase = GetEmailListUseCase(repository)
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "") ?: ""
-    private val password = sharePref.getString("password","") ?: ""
-    private val host = sharePref.getString("server","") ?: ""
-    private val port = sharePref.getString("port","") ?: ""
+    private val user = sharePref.getString("email", "alarm-parking@mail.ru") ?: ""
+    private val password = sharePref.getString("password","rQQz8Lq5zcTSdkPpb6W7") ?: ""
+    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
+    private val port = sharePref.getString("port","995") ?: ""
 
     private val _emailResponse = MutableLiveData<EmailResponse>()
     val emailResponse: LiveData<EmailResponse>

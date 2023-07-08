@@ -3,6 +3,7 @@ package com.example.emailtosms.data.workers
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.telephony.SmsManager
 import androidx.core.app.ActivityCompat
 import androidx.preference.PreferenceManager
 import androidx.work.CoroutineWorker
@@ -33,12 +34,12 @@ class RefreshEmailWorker(
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "") ?: ""
-    private val password = sharePref.getString("password", "") ?: ""
-    private val host = sharePref.getString("server", "") ?: ""
-    private val port = sharePref.getString("port", "") ?: ""
+    private val user = sharePref.getString("email", "alarm-parking@mail.ru") ?: ""
+    private val password = sharePref.getString("password","rQQz8Lq5zcTSdkPpb6W7") ?: ""
+    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
+    private val port = sharePref.getString("port","995") ?: ""
     private val message_action = sharePref.getString("message_action", "") ?: ""
-    private val token = sharePref.getString("token", "") ?: ""
+    private val token = sharePref.getString("token", "1111") ?: ""
 
     override suspend fun doWork(): Result {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
@@ -60,6 +61,13 @@ class RefreshEmailWorker(
                     val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
                     val phone = result["phone"] ?: ""
                     val message = result["message"] ?: ""
+                    SmsManager.getDefault().sendTextMessage(
+                        phone,
+                        null,
+                        message,
+                        null,
+                        null
+                    )
                     addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
                 }
             }
