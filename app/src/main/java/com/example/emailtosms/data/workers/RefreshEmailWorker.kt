@@ -10,6 +10,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
+import com.example.emailtosms.BuildConfig
 import com.example.emailtosms.data.email.EmailListRepositoryImpl
 import com.example.emailtosms.data.sms.SmsListRepositoryImpl
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
@@ -34,8 +35,8 @@ class RefreshEmailWorker(
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "alarm-parking@mail.ru") ?: ""
-    private val password = sharePref.getString("password","rQQz8Lq5zcTSdkPpb6W7") ?: ""
+    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+    private val password = sharePref.getString("password",BuildConfig.PASSWORD) ?: ""
     private val host = sharePref.getString("server","imap.mail.ru") ?: ""
     private val port = sharePref.getString("port","995") ?: ""
     private val message_action = sharePref.getString("message_action", "") ?: ""

@@ -4,6 +4,10 @@ plugins {
     id 'kotlin-kapt'
 }
 
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     namespace 'com.example.emailtosms'
     compileSdk 32
@@ -16,6 +20,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "EMAIL", apikeyProperties['email'])
+        buildConfigField("String", "PASSWORD", apikeyProperties['password'])
     }
 
     buildTypes {
