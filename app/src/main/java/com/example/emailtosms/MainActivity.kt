@@ -1,7 +1,6 @@
 package com.example.emailtosms
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.emailtosms.presentation.email.EmailListScreen
 import com.example.emailtosms.presentation.settings.SettingsFragment
@@ -13,10 +12,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val email: String = BuildConfig.EMAIL
-        val password = BuildConfig.PASSWORD
-        Log.i("MyTag", "Email $email Password $password")
 
         val bottomNav: BottomNavigationView = findViewById(R.id.bottomNav)
         bottomNav.setOnItemSelectedListener {
