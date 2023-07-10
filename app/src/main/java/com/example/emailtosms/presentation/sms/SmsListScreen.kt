@@ -1,9 +1,15 @@
 package com.example.emailtosms.presentation.sms
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,6 +23,8 @@ class SmsListScreen: Fragment() {
     private val binding: ListScreenBinding
         get() = _binding ?: throw RuntimeException("ListScreenBinding == null")
 
+    private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,6 +37,7 @@ class SmsListScreen: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        registerPermissionListener()
         viewModel = ViewModelProvider(
             requireActivity(),
             ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
@@ -43,7 +52,7 @@ class SmsListScreen: Fragment() {
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.checkEmail()
+            checkEmail()
         }
 
     }
@@ -54,6 +63,41 @@ class SmsListScreen: Fragment() {
             binding.rv1.addItemDecoration(DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL))
             binding.rv1.adapter = smsListAdapter
+        }
+    }
+
+    fun checkEmail(){
+        when {
+            ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.SEND_SMS)
+                    == PackageManager.PERMISSION_GRANTED -> {
+                viewModel.checkEmail(true)
+            }
+            shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS) -> {
+                viewModel.checkEmail(false)
+                Toast.makeText(
+                    requireContext(),
+                    "Для отправки SMS сообщений приложению необходимо разрешение на отправку SMS",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.SEND_SMS)
+            }
+        }
+    }
+
+    fun registerPermissionListener(){
+        requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            if(it){
+                viewModel.checkEmail(true)
+            }else{
+                viewModel.checkEmail(false)
+                Toast.makeText(
+                    requireContext(),
+                    "Отправка SMS выполняться не будет",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 

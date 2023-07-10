@@ -4,14 +4,14 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory app:title="Настройки E-mail">
 
         <EditTextPreference
-            android:defaultValue="alarm-parking@mail.ru"
+            android:defaultValue="@string/email"
             android:title="E-mail"
             app:key="email"
             app:title="E-mail"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            android:defaultValue="chusya12"
+            android:defaultValue="@string/password"
             android:key="password"
             android:selectAllOnFocus="false"
             android:singleLine="false"

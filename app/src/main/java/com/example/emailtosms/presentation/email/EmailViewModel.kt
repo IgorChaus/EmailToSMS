@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.example.emailtosms.BuildConfig
 import com.example.emailtosms.data.email.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListUseCase
@@ -17,10 +18,10 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     private val repository = EmailListRepositoryImpl()
     private val getEmailListUseCase = GetEmailListUseCase(repository)
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "") ?: ""
-    private val password = sharePref.getString("password","") ?: ""
-    private val host = sharePref.getString("server","") ?: ""
-    private val port = sharePref.getString("port","") ?: ""
+    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+    private val password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
+    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
+    private val port = sharePref.getString("port","995") ?: ""
 
     private val _emailResponse = MutableLiveData<EmailResponse>()
     val emailResponse: LiveData<EmailResponse>

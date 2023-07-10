@@ -1,11 +1,13 @@
 package com.example.emailtosms.presentation.sms
 
 import android.app.Application
+import android.telephony.SmsManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
+import com.example.emailtosms.BuildConfig
 import com.example.emailtosms.data.email.EmailListRepositoryImpl
 import com.example.emailtosms.data.sms.SmsListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
@@ -31,12 +33,12 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", "") ?: ""
-    private val password = sharePref.getString("password", "") ?: ""
-    private val host = sharePref.getString("server", "") ?: ""
-    private val port = sharePref.getString("port", "") ?: ""
+    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+    private val password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
+    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
+    private val port = sharePref.getString("port","995") ?: ""
     private val message_action = sharePref.getString("message_action", "") ?: ""
-    private val token = sharePref.getString("token", "") ?: ""
+    private val token = sharePref.getString("token", "1111") ?: ""
 
     val smsList = getSmsListUseCase.getSmsList()
 
@@ -46,27 +48,42 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
     private lateinit var emailResponse: EmailResponse
 
-    fun checkEmail() {
+    fun checkEmail(permission: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            _loading.postValue(true)
-            emailResponse =
-                getEmailListWithTokenUseCase.getEmailListWithToken(
-                    user,
-                    password,
-                    host,
-                    port,
-                    token,
-                    true
-                )
+            if (permission) {
+                emailResponse =
+                    getEmailListWithTokenUseCase.getEmailListWithToken(
+                        user,
+                        password,
+                        host,
+                        port,
+                        token,
+                        true
+                    )
 
-            if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
-                for (item in emailResponse.emailItemList) {
-                    val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-                    val date = item.date?.let { dateFormat.format(it) } ?: ""
-                    val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
-                    val phone = result["phone"] ?: ""
-                    val message = result["message"] ?: ""
-                    addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
+                if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
+                    for (item in emailResponse.emailItemList) {
+                        val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
+                        val date = item.date?.let { dateFormat.format(it) } ?: ""
+                        val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
+                        val phone = result["phone"] ?: ""
+                        val message = result["message"] ?: ""
+                        addSmsItemUseCase.addSmsItem(
+                            SmsItem(
+                                SmsItem.UNDEFIND_ID,
+                                date,
+                                phone,
+                                message
+                            )
+                        )
+                        SmsManager.getDefault().sendTextMessage(
+                            phone,
+                            null,
+                            message,
+                            null,
+                            null
+                        )
+                    }
                 }
             }
             _loading.postValue(false)
