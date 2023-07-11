@@ -34,17 +34,17 @@ class RefreshEmailWorker(
     private val mapperEmailToSms = MapperEmailToSms()
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
-    private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
-    private val password = sharePref.getString("password",BuildConfig.PASSWORD) ?: ""
-    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
-    private val port = sharePref.getString("port","995") ?: ""
-    private val message_action = sharePref.getString("message_action", "") ?: ""
-    private val token = sharePref.getString("token", "1111") ?: ""
 
     override suspend fun doWork(): Result {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==
             PackageManager.PERMISSION_GRANTED) {
+            val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+            val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+            val password = sharePref.getString("password",BuildConfig.PASSWORD) ?: ""
+            val host = sharePref.getString("server","imap.mail.ru") ?: ""
+            val port = sharePref.getString("port","995") ?: ""
+            val message_action = sharePref.getString("message_action", "") ?: ""
+            val token = sharePref.getString("token", "1111") ?: ""
             val emailResponse =
                 getEmailListWithTokenUseCase.getEmailListWithToken(
                     user,

@@ -32,14 +32,6 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private val mapperEmailToSms = MapperEmailToSms()
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
-    private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
-    private val password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
-    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
-    private val port = sharePref.getString("port","995") ?: ""
-    private val message_action = sharePref.getString("message_action", "") ?: ""
-    private val token = sharePref.getString("token", "1111") ?: ""
-
     val smsList = getSmsListUseCase.getSmsList()
 
     private val _loading = MutableLiveData<Boolean>()
@@ -49,6 +41,15 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private lateinit var emailResponse: EmailResponse
 
     fun checkEmail(permission: Boolean) {
+
+        val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+        val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+        val password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
+        val host = sharePref.getString("server","imap.mail.ru") ?: ""
+        val port = sharePref.getString("port","995") ?: ""
+        val message_action = sharePref.getString("message_action", "") ?: ""
+        val token = sharePref.getString("token", "1111") ?: ""
+
         viewModelScope.launch(Dispatchers.IO) {
             if (permission) {
                 emailResponse =

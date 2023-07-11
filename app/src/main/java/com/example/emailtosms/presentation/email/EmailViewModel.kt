@@ -17,11 +17,11 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     private val context = application
     private val repository = EmailListRepositoryImpl()
     private val getEmailListUseCase = GetEmailListUseCase(repository)
-    private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
-    private val user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
-    private val password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
-    private val host = sharePref.getString("server","imap.mail.ru") ?: ""
-    private val port = sharePref.getString("port","995") ?: ""
+
+    private lateinit var user: String
+    private lateinit var password: String
+    private lateinit var host: String
+    private lateinit var port: String
 
     private val _emailResponse = MutableLiveData<EmailResponse>()
     val emailResponse: LiveData<EmailResponse>
@@ -33,6 +33,7 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            getEmailSettings()
             _loading.postValue(true)
             _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
             _loading.postValue(false)
@@ -41,8 +42,17 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
 
     fun checkEmail(){
         viewModelScope.launch(Dispatchers.IO) {
+            getEmailSettings()
             _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
             _loading.postValue(false)
         }
+    }
+
+    fun getEmailSettings(){
+        val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+        user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
+        password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
+        host = sharePref.getString("server","imap.mail.ru") ?: ""
+        port = sharePref.getString("port","995") ?: ""
     }
 }
