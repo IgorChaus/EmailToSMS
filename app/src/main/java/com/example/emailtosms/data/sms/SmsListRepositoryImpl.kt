@@ -11,8 +11,8 @@ class SmsListRepositoryImpl(context: Context): SmsListRepository {
     private val smsListDao = AppDataBase.getInstance(context).smsListDao()
     private val mapper = SmsItemMapper()
 
-    override fun getSmsList(): LiveData<List<SmsItem>> = Transformations.map(
-        smsListDao.getSmsList()){
+    override fun getSmsList(limit: Int): LiveData<List<SmsItem>> = Transformations.map(
+        smsListDao.getSmsList(limit)){
         mapper.mapListDbModelToListEntity(it)
     }
 

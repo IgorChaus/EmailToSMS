@@ -65,7 +65,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            android:defaultValue="10"
+            android:defaultValue="20"
             android:key="len_log"
             android:selectAllOnFocus="false"
             android:singleLine="false"

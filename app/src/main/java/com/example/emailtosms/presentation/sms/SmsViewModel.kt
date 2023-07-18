@@ -32,7 +32,9 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
     private val mapperEmailToSms = MapperEmailToSms()
     private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
 
-    val smsList = getSmsListUseCase.getSmsList()
+    private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+    private val limit = sharePref.getString("len_log", "20")?.toInt() ?: 20
+    val smsList = getSmsListUseCase.getSmsList(limit)
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
