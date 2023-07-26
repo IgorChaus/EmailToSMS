@@ -3,8 +3,8 @@ package com.example.emailtosms.data.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.example.emailtosms.domain.sms.SmsItem
 import com.example.emailtosms.data.mapper.SmsItemMapper
+import com.example.emailtosms.domain.sms.SmsItem
 import com.example.emailtosms.domain.sms.SmsListRepository
 
 class SmsListRepositoryImpl(context: Context): SmsListRepository {
