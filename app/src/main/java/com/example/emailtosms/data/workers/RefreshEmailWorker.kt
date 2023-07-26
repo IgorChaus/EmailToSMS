@@ -11,8 +11,8 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.email.EmailListRepositoryImpl
-import com.example.emailtosms.data.sms.SmsListRepositoryImpl
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
+import com.example.emailtosms.data.database.SmsListRepositoryImpl
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
 import com.example.emailtosms.domain.sms.MapperEmailToSms

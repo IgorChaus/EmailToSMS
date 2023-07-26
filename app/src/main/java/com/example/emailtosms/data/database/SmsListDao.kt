@@ -1,4 +1,4 @@
-package com.example.emailtosms.data.sms
+package com.example.emailtosms.data.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

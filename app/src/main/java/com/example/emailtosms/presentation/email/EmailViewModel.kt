@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.email.EmailListRepositoryImpl
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListUseCase
 import kotlinx.coroutines.Dispatchers

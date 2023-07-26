@@ -1,4 +1,4 @@
-package com.example.emailtosms.data.email;
+package com.example.emailtosms.data.network;
 
 import java.io.IOException;
 

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.emailtosms.data.email.EmailListRepositoryImpl
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.databinding.ListScreenBinding
 
 class EmailListScreen: Fragment() {
