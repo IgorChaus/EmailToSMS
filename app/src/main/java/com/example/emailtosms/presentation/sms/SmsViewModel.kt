@@ -8,18 +8,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.data.database.SmsListRepositoryImpl
+import com.example.emailtosms.data.mapper.MapperEmailToSms
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
 import com.example.emailtosms.domain.sms.GetSmsListUseCase
-import com.example.emailtosms.domain.sms.MapperEmailToSms
-import com.example.emailtosms.domain.sms.SmsItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class SmsViewModel(application: Application) : AndroidViewModel(application) {
@@ -66,23 +63,12 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
                 if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
                     for (item in emailResponse.emailItemList) {
-                        val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-                        val date = item.date?.let { dateFormat.format(it) } ?: ""
-                        val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
-                        val phone = result["phone"] ?: ""
-                        val message = result["message"] ?: ""
-                        addSmsItemUseCase.addSmsItem(
-                            SmsItem(
-                                SmsItem.UNDEFIND_ID,
-                                date,
-                                phone,
-                                message
-                            )
-                        )
+                        val smsItem = mapperEmailToSms.mapEmailItemToSmsItem(item)
+                        addSmsItemUseCase.addSmsItem(smsItem)
                         SmsManager.getDefault().sendTextMessage(
-                            phone,
+                            smsItem.phone,
                             null,
-                            message,
+                            smsItem.message,
                             null,
                             null
                         )
