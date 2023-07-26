@@ -11,14 +11,11 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.data.database.SmsListRepositoryImpl
+import com.example.emailtosms.data.mapper.MapperEmailToSms
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
-import com.example.emailtosms.domain.sms.MapperEmailToSms
-import com.example.emailtosms.domain.sms.SmsItem
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class RefreshEmailWorker(
@@ -57,19 +54,15 @@ class RefreshEmailWorker(
 
             if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
                 for (item in emailResponse.emailItemList) {
-                    val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-                    val date = item.date?.let { dateFormat.format(it) } ?: ""
-                    val result = mapperEmailToSms.mapEmailMessageToSmsMessage(item.message)
-                    val phone = result["phone"] ?: ""
-                    val message = result["message"] ?: ""
+                    val smsItem = mapperEmailToSms.mapEmailItemToSmsItem(item)
+                    addSmsItemUseCase.addSmsItem(smsItem)
                     SmsManager.getDefault().sendTextMessage(
-                        phone,
+                        smsItem.phone,
                         null,
-                        message,
+                        smsItem.message,
                         null,
                         null
                     )
-                    addSmsItemUseCase.addSmsItem(SmsItem(SmsItem.UNDEFIND_ID, date, phone, message))
                 }
             }
         }
