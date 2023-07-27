@@ -31,7 +31,7 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
     private val limit = sharePref.getString("len_log", "20")?.toInt() ?: 20
-    val smsList = getSmsListUseCase.getSmsList(limit)
+    val smsList = getSmsListUseCase(limit)
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
@@ -52,7 +52,7 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             if (permission) {
                 emailResponse =
-                    getEmailListWithTokenUseCase.getEmailListWithToken(
+                    getEmailListWithTokenUseCase(
                         user,
                         password,
                         host,
@@ -64,7 +64,7 @@ class SmsViewModel(application: Application) : AndroidViewModel(application) {
                 if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
                     for (item in emailResponse.emailItemList) {
                         val smsItem = mapperEmailToSms.mapEmailItemToSmsItem(item)
-                        addSmsItemUseCase.addSmsItem(smsItem)
+                        addSmsItemUseCase(smsItem)
                         SmsManager.getDefault().sendTextMessage(
                             smsItem.phone,
                             null,

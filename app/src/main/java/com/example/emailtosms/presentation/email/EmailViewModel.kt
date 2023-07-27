@@ -35,7 +35,8 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             getEmailSettings()
             _loading.postValue(true)
-            _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
+            val emailList = getEmailListUseCase(user, password, host, port)
+            _emailResponse.postValue(emailList)
             _loading.postValue(false)
         }
     }
@@ -43,7 +44,8 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     fun checkEmail(){
         viewModelScope.launch(Dispatchers.IO) {
             getEmailSettings()
-            _emailResponse.postValue(getEmailListUseCase.getEmailList(user, password, host, port))
+            val emailList = getEmailListUseCase(user, password, host, port)
+            _emailResponse.postValue(emailList)
             _loading.postValue(false)
         }
     }

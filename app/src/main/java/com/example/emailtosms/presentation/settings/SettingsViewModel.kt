@@ -14,7 +14,7 @@ class SettingsViewModel(application: Application) : AndroidViewModel(application
 
     fun deleteAllSmsItems(){
         viewModelScope.launch{
-            deleteAllSmsItemsUseCase.deleteAllSmsItems()
+            deleteAllSmsItemsUseCase()
         }
     }
 }

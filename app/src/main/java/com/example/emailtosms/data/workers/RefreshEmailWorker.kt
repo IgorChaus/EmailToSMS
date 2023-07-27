@@ -43,7 +43,7 @@ class RefreshEmailWorker(
             val message_action = sharePref.getString("message_action", "") ?: ""
             val token = sharePref.getString("token", "1111") ?: ""
             val emailResponse =
-                getEmailListWithTokenUseCase.getEmailListWithToken(
+                getEmailListWithTokenUseCase(
                     user,
                     password,
                     host,
@@ -55,7 +55,7 @@ class RefreshEmailWorker(
             if (emailResponse.responseCode == EmailListRepositoryImpl.OK) {
                 for (item in emailResponse.emailItemList) {
                     val smsItem = mapperEmailToSms.mapEmailItemToSmsItem(item)
-                    addSmsItemUseCase.addSmsItem(smsItem)
+                    addSmsItemUseCase(smsItem)
                     SmsManager.getDefault().sendTextMessage(
                         smsItem.phone,
                         null,

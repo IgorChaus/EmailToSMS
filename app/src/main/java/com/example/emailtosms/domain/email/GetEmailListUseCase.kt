@@ -1,7 +1,7 @@
 package com.example.emailtosms.domain.email
 
 class GetEmailListUseCase(private val emailListRepository: EmailListRepository) {
-    suspend fun getEmailList(
+    suspend operator fun invoke(
         user: String,
         password: String,
         host: String,
