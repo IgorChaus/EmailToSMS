@@ -3,7 +3,7 @@ package com.example.emailtosms.data.mapper
 import com.example.emailtosms.data.database.SmsItemDbModel
 import com.example.emailtosms.domain.sms.SmsItem
 
-class SmsItemMapper {
+class MapperSmsItemToEntity {
 
     fun mapEntityToDbModel(smsItem: SmsItem) = SmsItemDbModel(
         id = smsItem.id,

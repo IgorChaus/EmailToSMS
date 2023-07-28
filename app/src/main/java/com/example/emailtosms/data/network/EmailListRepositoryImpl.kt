@@ -2,6 +2,8 @@ package com.example.emailtosms.data.network
 
 import android.os.Build
 import android.text.Html
+import com.example.emailtosms.data.mapper.MapperEmail
+import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.email.EmailListRepository
 import com.example.emailtosms.domain.email.EmailResponse
@@ -11,6 +13,8 @@ import javax.mail.internet.InternetAddress
 import javax.mail.search.FlagTerm
 
 class EmailListRepositoryImpl: EmailListRepository {
+
+    private val mapper = MapperEmail()
 
     override suspend fun getEmailListWithToken(
         user: String,
@@ -41,7 +45,7 @@ class EmailListRepositoryImpl: EmailListRepository {
                 for(message in messageList){
                     val subject = message.subject.trim()
                     if (subject == token) {
-                        val item = mapEmailMessageToEmailItem(message)
+                        val item = mapper.mapEmailMessageToEmailItem(message)
                         emailList.add(item)
                         if (isDeleted) {
                             message.setFlag(Flags.Flag.DELETED, true)
@@ -86,7 +90,7 @@ class EmailListRepositoryImpl: EmailListRepository {
                 folder.open(Folder.READ_ONLY)
                 val messageList = folder.messages
                 for (message in messageList){
-                    val item = mapEmailMessageToEmailItem(message)
+                    val item = mapper.mapEmailMessageToEmailItem(message)
                     emailList.add(item)
                 }
                 emailList.reverse()
@@ -105,49 +109,6 @@ class EmailListRepositoryImpl: EmailListRepository {
             return EmailResponse(emailList, response)
         }
     }
-
-    private fun mapEmailMessageToEmailItem(message: Message): EmailItem {
-
-        var address = ""
-        try {
-            message.from?.let {
-                address = (it[0] as InternetAddress).address
-            }
-        } catch (e: MessagingException){
-            address = ""
-        }
-
-        var subject: String
-        try {
-            subject = message.subject.trim()
-        } catch (e: MessagingException){
-            subject = ""
-        }
-
-        var date: Date?
-        try {
-            date = message.sentDate
-        } catch (e: MessagingException){
-            date = null
-        }
-
-        var emailMessage: String
-        try {
-            val getMulti = GetMulti()
-            emailMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(getMulti.getTextFromMessage(message), Html.FROM_HTML_MODE_LEGACY)
-                    .toString()
-            } else {
-                @Suppress("DEPRECATION")
-                Html.fromHtml(getMulti.getTextFromMessage(message)).toString()
-            }
-        } catch (e: MessagingException){
-            emailMessage = ""
-        }
-
-        return EmailItem(date, address, subject,  emailMessage)
-    }
-
 
     companion object {
         val OK = null

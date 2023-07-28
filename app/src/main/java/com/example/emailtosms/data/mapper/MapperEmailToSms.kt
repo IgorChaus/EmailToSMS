@@ -28,4 +28,6 @@ class MapperEmailToSms {
 
         return SmsItem(SmsItem.UNDEFIND_ID, date, phone, smsMessage)
     }
+
+
 }
