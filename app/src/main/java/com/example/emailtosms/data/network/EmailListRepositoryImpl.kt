@@ -89,6 +89,7 @@ class EmailListRepositoryImpl: EmailListRepository {
                     val item = mapEmailMessageToEmailItem(message)
                     emailList.add(item)
                 }
+                emailList.reverse()
                 folder.close(false)
                 store.close()
             } catch (e: AuthenticationFailedException){
