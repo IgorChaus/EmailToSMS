@@ -18,7 +18,7 @@
         tools:text="01.03" />
 
     <TextView
-        android:id="@+id/tv_address"
+        android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -30,7 +30,7 @@
         tools:text="+79114509981" />
 
     <TextView
-        android:id="@+id/tv_subject"
+        android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
@@ -38,6 +38,6 @@
         android:textColor="@color/black"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_address"
+        app:layout_constraintTop_toBottomOf="@+id/tv_phone"
         tools:text="Ваш заказ №123 готов к выдаче" />
 </androidx.constraintlayout.widget.ConstraintLayout>
