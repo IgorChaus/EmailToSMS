@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.emailtosms.databinding.ListScreenBinding
+import com.example.emailtosms.presentation.sms.adapter.SmsListAdapter
 
 class SmsListScreen: Fragment() {
     private lateinit var viewModel: SmsViewModel
@@ -44,7 +45,7 @@ class SmsListScreen: Fragment() {
         ).get(SmsViewModel::class.java)
 
         viewModel.smsList.observe(viewLifecycleOwner){
-            smsListAdapter.smsList = it
+            smsListAdapter.submitList(it)
         }
 
         viewModel.loading.observe( viewLifecycleOwner){

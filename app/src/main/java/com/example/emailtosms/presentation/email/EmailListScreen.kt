@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.databinding.ListScreenBinding
+import com.example.emailtosms.presentation.email.adapter.EmailListAdapter
 
 class EmailListScreen: Fragment() {
     private lateinit var viewModel: EmailViewModel
@@ -37,7 +38,7 @@ class EmailListScreen: Fragment() {
 
         viewModel.emailResponse.observe(viewLifecycleOwner){
             if (it.responseCode == EmailListRepositoryImpl.OK) {
-                emailListAdapter.emailList = it.emailItemList
+                emailListAdapter.submitList(it.emailItemList)
             }
         }
 
