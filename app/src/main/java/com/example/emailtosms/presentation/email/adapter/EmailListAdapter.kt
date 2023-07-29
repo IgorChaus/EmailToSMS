@@ -23,9 +23,8 @@ class EmailListAdapter: ListAdapter<EmailItem, EmailItemViewHolder>(EmailItemDif
 
     override fun onBindViewHolder(holder: EmailItemViewHolder, position: Int) {
         val emailItem = getItem(position)
-        val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
         with(holder.binding) {
-            tvDate.text = emailItem.date?.let { dateFormat.format(it) }
+            tvDate.text = emailItem.date
             tvAddress.text = emailItem.address
             tvSubject.text = emailItem.subject
             tvMessage.text = emailItem.message

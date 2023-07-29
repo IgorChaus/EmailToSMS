@@ -4,6 +4,7 @@ import android.os.Build
 import android.text.Html
 import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.EmailItem
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.mail.Message
 import javax.mail.MessagingException
@@ -29,11 +30,12 @@ class MapperEmail {
             subject = ""
         }
 
-        var date: Date?
+        var date = ""
         try {
-            date = message.sentDate
+            val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
+            date = dateFormat.format(message.sentDate)
         } catch (e: MessagingException){
-            date = null
+            date = ""
         }
 
         var emailMessage: String
