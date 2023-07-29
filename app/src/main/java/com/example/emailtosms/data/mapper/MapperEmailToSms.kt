@@ -20,8 +20,9 @@ class MapperEmailToSms {
             phone = re.replace(phone, "")
         }
 
+        val currentDate = Date()
         val dateFormat = SimpleDateFormat("dd.MM", Locale("ru", "RU"))
-        val date = item.date?.let { dateFormat.format(it) } ?: ""
+        val date = dateFormat.format(currentDate)
 
         var smsMessage = emailMessage.substring(spaceIndex).trim()
         smsMessage = smsMessage.replace("\n", "")
