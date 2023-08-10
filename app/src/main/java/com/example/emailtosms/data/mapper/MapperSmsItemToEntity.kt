@@ -2,8 +2,9 @@ package com.example.emailtosms.data.mapper
 
 import com.example.emailtosms.data.database.SmsItemDbModel
 import com.example.emailtosms.domain.sms.SmsItem
+import javax.inject.Inject
 
-class MapperSmsItemToEntity {
+class MapperSmsItemToEntity @Inject constructor(){
 
     fun mapEntityToDbModel(smsItem: SmsItem) = SmsItemDbModel(
         id = smsItem.id,

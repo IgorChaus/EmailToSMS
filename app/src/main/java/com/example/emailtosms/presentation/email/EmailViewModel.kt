@@ -1,22 +1,25 @@
 package com.example.emailtosms.presentation.email
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EmailViewModel(application: Application): AndroidViewModel(application) {
-    private val context = application
-    private val repository = EmailListRepositoryImpl()
-    private val getEmailListUseCase = GetEmailListUseCase(repository)
+class EmailViewModel @Inject constructor(
+    private val application: Application,
+    private val getEmailListUseCase: GetEmailListUseCase
+): ViewModel() {
+
+//    private val repository = EmailListRepositoryImpl()
+//    private val getEmailListUseCase = GetEmailListUseCase(repository)
 
     private lateinit var user: String
     private lateinit var password: String
@@ -51,7 +54,7 @@ class EmailViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun getEmailSettings(){
-        val sharePref = PreferenceManager.getDefaultSharedPreferences(context)
+        val sharePref = PreferenceManager.getDefaultSharedPreferences(application)
         user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
         password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""
         host = sharePref.getString("server","imap.mail.ru") ?: ""

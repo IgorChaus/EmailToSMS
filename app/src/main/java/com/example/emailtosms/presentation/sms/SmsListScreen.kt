@@ -1,6 +1,7 @@
 package com.example.emailtosms.presentation.sms
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.emailtosms.databinding.ListScreenBinding
+import com.example.emailtosms.presentation.EmailToListApp
+import com.example.emailtosms.presentation.ViewModelFactory
 import com.example.emailtosms.presentation.sms.adapter.SmsListAdapter
+import javax.inject.Inject
 
 class SmsListScreen: Fragment() {
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: SmsViewModel
     private lateinit var smsListAdapter: SmsListAdapter
 
@@ -25,6 +31,15 @@ class SmsListScreen: Fragment() {
         get() = _binding ?: throw RuntimeException("ListScreenBinding == null")
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
+
+    private val component by lazy {
+        (requireActivity().application as EmailToListApp).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +56,7 @@ class SmsListScreen: Fragment() {
         registerPermissionListener()
         viewModel = ViewModelProvider(
             requireActivity(),
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+            viewModelFactory
         ).get(SmsViewModel::class.java)
 
         viewModel.smsList.observe(viewLifecycleOwner){

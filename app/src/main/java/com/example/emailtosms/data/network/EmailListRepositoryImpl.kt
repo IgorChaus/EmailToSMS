@@ -1,20 +1,15 @@
 package com.example.emailtosms.data.network
 
-import android.os.Build
-import android.text.Html
 import com.example.emailtosms.data.mapper.MapperEmail
-import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.email.EmailListRepository
 import com.example.emailtosms.domain.email.EmailResponse
 import java.util.*
+import javax.inject.Inject
 import javax.mail.*
-import javax.mail.internet.InternetAddress
 import javax.mail.search.FlagTerm
 
-class EmailListRepositoryImpl: EmailListRepository {
-
-    private val mapper = MapperEmail()
+class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: MapperEmail): EmailListRepository {
 
     override suspend fun getEmailListWithToken(
         user: String,
@@ -45,7 +40,7 @@ class EmailListRepositoryImpl: EmailListRepository {
                 for(message in messageList){
                     val subject = message.subject.trim()
                     if (subject == token) {
-                        val item = mapper.mapEmailMessageToEmailItem(message)
+                        val item = mapperEmail.mapEmailMessageToEmailItem(message)
                         emailList.add(item)
                         if (isDeleted) {
                             message.setFlag(Flags.Flag.DELETED, true)
@@ -90,7 +85,7 @@ class EmailListRepositoryImpl: EmailListRepository {
                 folder.open(Folder.READ_ONLY)
                 val messageList = folder.messages
                 for (message in messageList){
-                    val item = mapper.mapEmailMessageToEmailItem(message)
+                    val item = mapperEmail.mapEmailMessageToEmailItem(message)
                     emailList.add(item)
                 }
                 emailList.reverse()

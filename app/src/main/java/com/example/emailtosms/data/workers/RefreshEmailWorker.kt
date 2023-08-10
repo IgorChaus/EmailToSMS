@@ -11,8 +11,11 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.example.emailtosms.BuildConfig
+import com.example.emailtosms.data.database.AppDataBase
 import com.example.emailtosms.data.database.SmsListRepositoryImpl
+import com.example.emailtosms.data.mapper.MapperEmail
 import com.example.emailtosms.data.mapper.MapperEmailToSms
+import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
@@ -24,8 +27,11 @@ class RefreshEmailWorker(
 ): CoroutineWorker(_context, workerParameters) {
 
     private val context = _context
-    private val smsRepository = SmsListRepositoryImpl(context)
-    private val emailRepository = EmailListRepositoryImpl()
+    private val smsListDao = AppDataBase.getInstance(context).smsListDao()
+    private val mapperSmsItemToEntity = MapperSmsItemToEntity()
+    private val smsRepository = SmsListRepositoryImpl(smsListDao, mapperSmsItemToEntity)
+    private val mapperEmail = MapperEmail()
+    private val emailRepository = EmailListRepositoryImpl(mapperEmail)
 
     private val addSmsItemUseCase = AddSmsItemUseCase(smsRepository)
     private val mapperEmailToSms = MapperEmailToSms()

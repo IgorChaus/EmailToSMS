@@ -6,11 +6,12 @@ import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.EmailItem
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import javax.mail.Message
 import javax.mail.MessagingException
 import javax.mail.internet.InternetAddress
 
-class MapperEmail {
+class MapperEmail @Inject constructor() {
 
     fun mapEmailMessageToEmailItem(message: Message): EmailItem {
 
