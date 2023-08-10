@@ -7,6 +7,7 @@ import com.example.emailtosms.presentation.sms.SmsListScreen
 import dagger.BindsInstance
 import dagger.Component
 
+@ApplicationScope
 @Component(modules = [
     DataModule::class,
     ViewModelModule::class

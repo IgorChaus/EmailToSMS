@@ -15,14 +15,17 @@ import dagger.Provides
 interface DataModule {
 
     @Binds
+    @ApplicationScope
     fun bindEmailListRepository(impl: EmailListRepositoryImpl): EmailListRepository
 
     @Binds
+    @ApplicationScope
     fun bindSmsListRepository(impl: SmsListRepositoryImpl): SmsListRepository
 
     companion object{
 
         @Provides
+        @ApplicationScope
         fun provideSmsListDao(application: Application): SmsListDao{
             return AppDataBase.getInstance(application).smsListDao()
         }
