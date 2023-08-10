@@ -11,34 +11,19 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.example.emailtosms.BuildConfig
-import com.example.emailtosms.data.database.AppDataBase
-import com.example.emailtosms.data.database.SmsListRepositoryImpl
-import com.example.emailtosms.data.mapper.MapperEmail
 import com.example.emailtosms.data.mapper.MapperEmailToSms
-import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
-import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
 import java.util.concurrent.TimeUnit
 
 class RefreshEmailWorker(
-    _context: Context,
-    workerParameters: WorkerParameters
-): CoroutineWorker(_context, workerParameters) {
-
-    private val context = _context
-    private val smsListDao = AppDataBase.getInstance(context).smsListDao()
-    private val mapperSmsItemToEntity = MapperSmsItemToEntity()
-    private val smsRepository = SmsListRepositoryImpl(smsListDao, mapperSmsItemToEntity)
-    private val getMulti = GetMulti()
-    private val mapperEmail = MapperEmail(getMulti)
-    private val emailRepository = EmailListRepositoryImpl(mapperEmail)
-
-    private val addSmsItemUseCase = AddSmsItemUseCase(smsRepository)
-    private val mapperEmailToSms = MapperEmailToSms()
-    private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
-
+    val context: Context,
+    workerParameters: WorkerParameters,
+    private val addSmsItemUseCase: AddSmsItemUseCase,
+    private val getEmailListWithTokenUseCase: GetEmailListWithTokenUseCase,
+    private val mapperEmailToSms: MapperEmailToSms
+): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) ==

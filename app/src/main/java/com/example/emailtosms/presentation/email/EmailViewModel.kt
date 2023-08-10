@@ -18,9 +18,6 @@ class EmailViewModel @Inject constructor(
     private val getEmailListUseCase: GetEmailListUseCase
 ): ViewModel() {
 
-//    private val repository = EmailListRepositoryImpl()
-//    private val getEmailListUseCase = GetEmailListUseCase(repository)
-
     private lateinit var user: String
     private lateinit var password: String
     private lateinit var host: String

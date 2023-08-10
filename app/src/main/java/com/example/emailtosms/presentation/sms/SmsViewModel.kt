@@ -27,15 +27,6 @@ class SmsViewModel @Inject constructor(
     private val getEmailListWithTokenUseCase: GetEmailListWithTokenUseCase
 ) : ViewModel() {
 
-//    private val context = application
-//    private val smsRepository = SmsListRepositoryImpl(application)
-//    private val emailRepository = EmailListRepositoryImpl()
-
- //   private val getSmsListUseCase = GetSmsListUseCase(smsRepository)
- //   private val addSmsItemUseCase = AddSmsItemUseCase(smsRepository)
-//    private val mapperEmailToSms = MapperEmailToSms()
-//    private val getEmailListWithTokenUseCase = GetEmailListWithTokenUseCase(emailRepository)
-
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(application)
     private val limit = sharePref.getString("len_log", "20")?.toInt() ?: 20
     val smsList = getSmsListUseCase(limit)
