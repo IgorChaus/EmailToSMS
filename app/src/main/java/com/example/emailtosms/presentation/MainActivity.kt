@@ -1,7 +1,8 @@
-package com.example.emailtosms
+package com.example.emailtosms.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.emailtosms.R
 import com.example.emailtosms.presentation.email.EmailListScreen
 import com.example.emailtosms.presentation.settings.SettingsFragment
 import com.example.emailtosms.presentation.sms.SmsListScreen

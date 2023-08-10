@@ -6,11 +6,14 @@ import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.EmailItem
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import javax.mail.Message
 import javax.mail.MessagingException
 import javax.mail.internet.InternetAddress
 
-class MapperEmail {
+class MapperEmail @Inject constructor(
+    private val getMulti: GetMulti
+) {
 
     fun mapEmailMessageToEmailItem(message: Message): EmailItem {
 
@@ -40,7 +43,6 @@ class MapperEmail {
 
         var emailMessage: String
         try {
-            val getMulti = GetMulti()
             emailMessage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(getMulti.getTextFromMessage(message), Html.FROM_HTML_MODE_LEGACY)
                     .toString()

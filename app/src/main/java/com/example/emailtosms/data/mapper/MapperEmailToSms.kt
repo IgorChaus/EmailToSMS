@@ -4,8 +4,9 @@ import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.sms.SmsItem
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class MapperEmailToSms {
+class MapperEmailToSms @Inject constructor(){
 
     fun mapEmailItemToSmsItem(item: EmailItem): SmsItem {
         val emailMessage = item.message.trim()

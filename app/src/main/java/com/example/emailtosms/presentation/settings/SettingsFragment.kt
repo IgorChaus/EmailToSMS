@@ -1,6 +1,7 @@
 package com.example.emailtosms.presentation.settings
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
@@ -16,21 +17,35 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.example.emailtosms.R
 import com.example.emailtosms.data.workers.RefreshEmailWorker
+import com.example.emailtosms.presentation.EmailToListApp
+import com.example.emailtosms.presentation.ViewModelFactory
+import javax.inject.Inject
 
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
     private lateinit var viewModel: SettingsViewModel
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private var preferenceInterval: Preference? = null
     private var interval: Any = "Каждые 15 минут"
+
+    private val component by lazy {
+        (requireActivity().application as EmailToListApp).component
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
         viewModel = ViewModelProvider(
             this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+            viewModelFactory
         ).get(SettingsViewModel::class.java)
 
         setClearLogListener()
@@ -137,7 +152,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val workManager = WorkManager.getInstance(application)
         workManager.enqueueUniquePeriodicWork(
             RefreshEmailWorker.NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             RefreshEmailWorker.makeRequest(intervalInMinutes)
         )
     }

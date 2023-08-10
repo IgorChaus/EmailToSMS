@@ -1,6 +1,10 @@
 package com.example.emailtosms.domain.email
 
-class GetEmailListWithTokenUseCase(private val emailListRepository: EmailListRepository) {
+import javax.inject.Inject
+
+class GetEmailListWithTokenUseCase @Inject constructor(
+    private val emailListRepository: EmailListRepository
+) {
     suspend operator fun invoke(
         user: String,
         password: String,
