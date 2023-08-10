@@ -5,6 +5,7 @@ import com.example.emailtosms.data.database.AppDataBase
 import com.example.emailtosms.data.database.SmsListDao
 import com.example.emailtosms.data.database.SmsListRepositoryImpl
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
+import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.EmailListRepository
 import com.example.emailtosms.domain.sms.SmsListRepository
 import dagger.Binds
@@ -28,6 +29,11 @@ interface DataModule {
         @ApplicationScope
         fun provideSmsListDao(application: Application): SmsListDao{
             return AppDataBase.getInstance(application).smsListDao()
+        }
+
+        @Provides
+        fun provideGetMulti(): GetMulti{
+            return GetMulti()
         }
     }
 }

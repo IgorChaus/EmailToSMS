@@ -17,6 +17,7 @@ import com.example.emailtosms.data.mapper.MapperEmail
 import com.example.emailtosms.data.mapper.MapperEmailToSms
 import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
+import com.example.emailtosms.data.network.GetMulti
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
 import java.util.concurrent.TimeUnit
@@ -30,7 +31,8 @@ class RefreshEmailWorker(
     private val smsListDao = AppDataBase.getInstance(context).smsListDao()
     private val mapperSmsItemToEntity = MapperSmsItemToEntity()
     private val smsRepository = SmsListRepositoryImpl(smsListDao, mapperSmsItemToEntity)
-    private val mapperEmail = MapperEmail()
+    private val getMulti = GetMulti()
+    private val mapperEmail = MapperEmail(getMulti)
     private val emailRepository = EmailListRepositoryImpl(mapperEmail)
 
     private val addSmsItemUseCase = AddSmsItemUseCase(smsRepository)
