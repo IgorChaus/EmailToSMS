@@ -14,6 +14,7 @@ import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListWithTokenUseCase
 import com.example.emailtosms.domain.sms.AddSmsItemUseCase
 import com.example.emailtosms.domain.sms.GetSmsListUseCase
+import com.example.emailtosms.domain.sms.SmsItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,13 +30,23 @@ class SmsViewModel @Inject constructor(
 
     private val sharePref = PreferenceManager.getDefaultSharedPreferences(application)
     private val limit = sharePref.getString("len_log", "20")?.toInt() ?: 20
-    val smsList = getSmsListUseCase(limit)
+
+
+ //   val smsList = getSmsListUseCase(limit)
+
+    private val _smsList = MutableLiveData<List<SmsItem>>()
+    val smsList: LiveData<List<SmsItem>>
+        get() = _smsList
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
         get() = _loading
 
     private lateinit var emailResponse: EmailResponse
+
+    init{
+        updateSmsList(limit)
+    }
 
     fun checkEmail(permission: Boolean) {
 
@@ -76,5 +87,12 @@ class SmsViewModel @Inject constructor(
             _loading.postValue(false)
         }
     }
+
+    fun updateSmsList(limit: Int){
+        viewModelScope.launch(Dispatchers.Main) {
+            _smsList.value = getSmsListUseCase(limit)!!
+        }
+    }
+
 
 }
