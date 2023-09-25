@@ -1,6 +1,5 @@
 package com.example.emailtosms.data.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -9,7 +8,7 @@ import androidx.room.Query
 interface SmsListDao {
 
     @Query("SELECT * FROM sms_items ORDER BY id DESC LIMIT :limit")
-    fun getSmsList(limit: Int): LiveData<List<SmsItemDbModel>>
+    suspend fun getSmsList(limit: Int): List<SmsItemDbModel>
 
     @Insert()
     suspend fun addSmsItem(smsItemDbModel: SmsItemDbModel)

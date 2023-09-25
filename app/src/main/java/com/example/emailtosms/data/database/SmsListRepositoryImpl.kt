@@ -1,7 +1,5 @@
 package com.example.emailtosms.data.database
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.map
 import com.example.emailtosms.data.mapper.MapperSmsItemToEntity
 import com.example.emailtosms.domain.sms.SmsItem
 import com.example.emailtosms.domain.sms.SmsListRepository
@@ -14,9 +12,9 @@ class SmsListRepositoryImpl @Inject constructor(
 //    private val smsListDao = AppDataBase.getInstance(context).smsListDao()
 //    private val mapper = MapperSmsItemToEntity()
 
-    override fun getSmsList(limit: Int): LiveData<List<SmsItem>> =
+    override suspend fun getSmsList(limit: Int): List<SmsItem> =
         smsListDao.getSmsList(limit).map {
-            mapper.mapListDbModelToListEntity(it)
+            mapper.mapDbModelToEntity(it)
         }
 
     override suspend fun addSmsItem(smsItem: SmsItem) {

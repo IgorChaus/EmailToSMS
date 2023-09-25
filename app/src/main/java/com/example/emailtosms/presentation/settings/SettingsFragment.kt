@@ -19,6 +19,7 @@ import com.example.emailtosms.R
 import com.example.emailtosms.data.workers.RefreshEmailWorker
 import com.example.emailtosms.presentation.EmailToListApp
 import com.example.emailtosms.presentation.ViewModelFactory
+import com.example.emailtosms.presentation.sms.SmsViewModel
 import javax.inject.Inject
 
 
@@ -26,7 +27,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private lateinit var viewModel: SettingsViewModel
+    private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var smsViewModel: SmsViewModel
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private var preferenceInterval: Preference? = null
     private var interval: Any = "Каждые 15 минут"
@@ -43,12 +45,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
 
-        viewModel = ViewModelProvider(
+        settingsViewModel = ViewModelProvider(
             this,
             viewModelFactory
         ).get(SettingsViewModel::class.java)
 
+        smsViewModel = ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(SmsViewModel::class.java)
+
         setClearLogListener()
+        setLimitListener()
         registerPermissionListener()
 
         preferenceInterval = findPreference<Preference>("check_interval")
@@ -140,9 +148,17 @@ class SettingsFragment : PreferenceFragmentCompat() {
             ) { dialog, which -> dialog.cancel() }
 
             builder.setPositiveButton("Да") { dialog, which ->
-                viewModel.deleteAllSmsItems()
+                settingsViewModel.deleteAllSmsItems()
             }
             builder.show()
+            true
+        }
+    }
+
+    private fun setLimitListener(){
+        val limitSetting = findPreference<Preference>("len_log")
+        limitSetting?.setOnPreferenceChangeListener { _, newValue ->
+            smsViewModel.updateSmsList(newValue.toString().toInt())
             true
         }
     }
