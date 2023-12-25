@@ -7,6 +7,7 @@ class GetEmailListUseCase @Inject constructor(private val emailListRepository: E
         user: String,
         password: String,
         host: String,
-        port: String
-    ): EmailResponse = emailListRepository.getEmailList(user, password, host, port)
+        port: String,
+        startMessageNumber: Int
+    ): EmailResponse = emailListRepository.getEmailList(user, password, host, port, startMessageNumber)
 }

@@ -67,7 +67,8 @@ class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: Mappe
         user: String,
         password: String,
         host: String,
-        port: String
+        port: String,
+        startMessageNumber: Int
     ): EmailResponse {
 
         synchronized(LOCK){
@@ -83,7 +84,16 @@ class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: Mappe
                 store.connect(host, user, password)
                 val folder = store.getFolder("INBOX")
                 folder.open(Folder.READ_ONLY)
-                val messageList = folder.messages
+                val numberMessages = startMessageNumber + NUMBER_DOWNLOAD_MESSAGES - 1
+                val endMessageNumber = if ((numberMessages) > folder.messageCount) {
+                    folder.messageCount
+                }else {
+                    numberMessages
+                }
+                val messageList = folder.getMessages(
+                    startMessageNumber,
+                    endMessageNumber
+                )
                 for (message in messageList){
                     val item = mapperEmail.mapEmailMessageToEmailItem(message)
                     emailList.add(item)
@@ -108,5 +118,6 @@ class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: Mappe
     companion object {
         val OK = null
         private var LOCK = Any()
+        const val NUMBER_DOWNLOAD_MESSAGES = 7
     }
 }

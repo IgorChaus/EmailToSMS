@@ -35,7 +35,7 @@ class EmailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getEmailSettings()
             _loading.postValue(true)
-            val emailList = getEmailListUseCase(user, password, host, port)
+            val emailList = getEmailListUseCase(user, password, host, port, 1)
             _emailResponse.postValue(emailList)
             _loading.postValue(false)
         }
@@ -44,7 +44,7 @@ class EmailViewModel @Inject constructor(
     fun checkEmail(){
         viewModelScope.launch(Dispatchers.IO) {
             getEmailSettings()
-            val emailList = getEmailListUseCase(user, password, host, port)
+            val emailList = getEmailListUseCase(user, password, host, port, 1)
             _emailResponse.postValue(emailList)
             _loading.postValue(false)
         }

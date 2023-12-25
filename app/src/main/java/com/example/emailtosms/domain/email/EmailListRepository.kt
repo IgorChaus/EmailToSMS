@@ -6,7 +6,8 @@ interface EmailListRepository {
         user: String,
         password: String,
         host: String,
-        port: String
+        port: String,
+        startMessageNumber: Int
     ): EmailResponse
 
     suspend fun getEmailListWithToken(
