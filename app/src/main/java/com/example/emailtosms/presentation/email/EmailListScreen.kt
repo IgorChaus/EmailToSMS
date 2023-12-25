@@ -54,7 +54,9 @@ class EmailListScreen: Fragment() {
         ).get(EmailViewModel::class.java)
 
         viewModel.emailResponse.observe(viewLifecycleOwner) {
-            emailListAdapter.submitList(it?.toMutableList())
+            if (it.responseCode == EmailListRepositoryImpl.OK) {
+                emailListAdapter.submitList(it.emailItemList.toMutableList())
+            }
         }
 
         viewModel.loading.observe(viewLifecycleOwner){

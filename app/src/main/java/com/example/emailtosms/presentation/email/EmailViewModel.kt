@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import com.example.emailtosms.BuildConfig
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.domain.email.EmailItem
+import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,8 +30,8 @@ class EmailViewModel @Inject constructor(
 
     private val emailMessages = arrayListOf<EmailItem>()
 
-    private val _emailResponse = MutableLiveData<List<EmailItem>>()
-    val emailResponse: LiveData<List<EmailItem>>
+    private val _emailResponse = MutableLiveData<EmailResponse>()
+    val emailResponse: LiveData<EmailResponse>
         get() = _emailResponse
 
     private val _loading = MutableLiveData<Boolean>()
@@ -54,7 +55,7 @@ class EmailViewModel @Inject constructor(
             if (emailList.emailItemList.size == EmailListRepositoryImpl.NUMBER_DOWNLOAD_MESSAGES){
                 loadMessageNumber = EmailListRepositoryImpl.NUMBER_DOWNLOAD_MESSAGES
             }
-            _emailResponse.postValue(emailMessages)
+            _emailResponse.postValue(emailList)
             _loading.postValue(false)
         }
 
@@ -77,7 +78,7 @@ class EmailViewModel @Inject constructor(
                 loadMessageNumber = loadMessageNumber + emailList.emailItemList.size
                 emailMessages.addAll(emailList.emailItemList)
                 Log.i("MyTag", "emailMessages.size ${emailMessages.size}")
-                _emailResponse.postValue(emailMessages)
+                _emailResponse.postValue(EmailResponse(emailMessages, emailList.responseCode))
             }
             _loading.postValue(false)
         }
