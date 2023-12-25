@@ -179,8 +179,4 @@ class SettingsFragment : PreferenceFragmentCompat() {
         workManager.cancelUniqueWork(RefreshEmailWorker.NAME)
     }
 
-    companion object {
-        fun getInstance() = SettingsFragment()
-    }
-
 }

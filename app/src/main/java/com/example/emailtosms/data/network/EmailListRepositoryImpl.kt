@@ -84,14 +84,17 @@ class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: Mappe
                 store.connect(host, user, password)
                 val folder = store.getFolder("INBOX")
                 folder.open(Folder.READ_ONLY)
-                val numberMessages = startMessageNumber + NUMBER_DOWNLOAD_MESSAGES - 1
-                val endMessageNumber = if ((numberMessages) > folder.messageCount) {
-                    folder.messageCount
-                }else {
-                    numberMessages
+
+                val firstMessageNumber = if(folder.messageCount > NUMBER_DOWNLOAD_MESSAGES + startMessageNumber){
+                    folder.messageCount - NUMBER_DOWNLOAD_MESSAGES + 1 - startMessageNumber
+                } else {
+                    1
                 }
+
+                val endMessageNumber = folder.messageCount - startMessageNumber
+
                 val messageList = folder.getMessages(
-                    startMessageNumber,
+                    firstMessageNumber,
                     endMessageNumber
                 )
                 for (message in messageList){
@@ -118,6 +121,6 @@ class EmailListRepositoryImpl @Inject constructor(private val mapperEmail: Mappe
     companion object {
         val OK = null
         private var LOCK = Any()
-        const val NUMBER_DOWNLOAD_MESSAGES = 7
+        const val NUMBER_DOWNLOAD_MESSAGES = 10
     }
 }
