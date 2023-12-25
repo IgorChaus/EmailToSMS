@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.emailtosms.data.network.EmailListRepositoryImpl
 import com.example.emailtosms.databinding.ListScreenBinding
 import com.example.emailtosms.presentation.EmailToListApp
@@ -51,13 +53,13 @@ class EmailListScreen: Fragment() {
             viewModelFactory
         ).get(EmailViewModel::class.java)
 
-        viewModel.emailResponse.observe(viewLifecycleOwner){
+        viewModel.emailResponse.observe(viewLifecycleOwner) {
             if (it.responseCode == EmailListRepositoryImpl.OK) {
-                emailListAdapter.submitList(it.emailItemList)
+                emailListAdapter.submitList(it.emailItemList.toMutableList())
             }
         }
 
-        viewModel.loading.observe( viewLifecycleOwner){
+        viewModel.loading.observe(viewLifecycleOwner){
             binding.swipeRefreshLayout.isRefreshing = it
         }
 
@@ -67,14 +69,42 @@ class EmailListScreen: Fragment() {
 
     }
 
-    fun setupRecyclerView(){
+    private fun setupRecyclerView(){
+
         emailListAdapter = EmailListAdapter()
+
+        emailListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                if (viewModel.getLoadMessageNumber() > EmailListRepositoryImpl.NUMBER_DOWNLOAD_MESSAGES) {
+                    binding.rv1.scrollToPosition(emailListAdapter.itemCount - 1)
+                }
+            }
+        })
+
         with(binding.rv1){
-            binding.rv1.addItemDecoration(
+            addItemDecoration(
                 DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL)
             )
-            binding.rv1.adapter = emailListAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0) {
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        val visibleItemCount = layoutManager.childCount
+                        val totalItemCount = layoutManager.itemCount
+                        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                        if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount &&
+                            firstVisibleItemPosition >= 0) {
+                            viewModel.getNextMessages()
+                        }
+                    }
+                }
+            })
+
+            adapter = emailListAdapter
         }
     }
 
@@ -83,7 +113,4 @@ class EmailListScreen: Fragment() {
         _binding = null
     }
 
-    companion object{
-        fun getInstance() = EmailListScreen()
-    }
 }

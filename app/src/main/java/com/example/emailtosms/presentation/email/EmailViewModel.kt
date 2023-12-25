@@ -1,12 +1,15 @@
 package com.example.emailtosms.presentation.email
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.emailtosms.BuildConfig
+import com.example.emailtosms.data.network.EmailListRepositoryImpl
+import com.example.emailtosms.domain.email.EmailItem
 import com.example.emailtosms.domain.email.EmailResponse
 import com.example.emailtosms.domain.email.GetEmailListUseCase
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +26,10 @@ class EmailViewModel @Inject constructor(
     private lateinit var host: String
     private lateinit var port: String
 
+    private var loadMessageNumber: Int = 0
+
+    private val emailMessages = arrayListOf<EmailItem>()
+
     private val _emailResponse = MutableLiveData<EmailResponse>()
     val emailResponse: LiveData<EmailResponse>
         get() = _emailResponse
@@ -32,25 +39,53 @@ class EmailViewModel @Inject constructor(
         get() = _loading
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getEmailSettings()
-            _loading.postValue(true)
-            val emailList = getEmailListUseCase(user, password, host, port, 1)
-            _emailResponse.postValue(emailList)
-            _loading.postValue(false)
-        }
+        _loading.postValue(true)
+       checkEmail()
     }
+
+    fun getLoadMessageNumber() = loadMessageNumber
 
     fun checkEmail(){
         viewModelScope.launch(Dispatchers.IO) {
+            emailMessages.clear()
+            loadMessageNumber = 0
             getEmailSettings()
-            val emailList = getEmailListUseCase(user, password, host, port, 1)
+            val emailList = getEmailListUseCase(user, password, host, port, 0)
+            emailMessages.addAll(emailList.emailItemList)
+            if (emailList.emailItemList.size == EmailListRepositoryImpl.NUMBER_DOWNLOAD_MESSAGES){
+                loadMessageNumber = EmailListRepositoryImpl.NUMBER_DOWNLOAD_MESSAGES
+            }
             _emailResponse.postValue(emailList)
+            _loading.postValue(false)
+        }
+
+    }
+
+    fun getNextMessages(){
+        if (_loading.value == true || loadMessageNumber == 0) {
+            return
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            _loading.postValue(true)
+            getEmailSettings()
+
+            Log.i("MyTag", "startMessageNumber $loadMessageNumber")
+
+            val emailList = getEmailListUseCase(user, password, host, port, loadMessageNumber)
+            Log.i("MyTag", "emailList.size ${emailList.emailItemList.size}")
+
+            if (emailList.emailItemList.isNotEmpty()) {
+                loadMessageNumber = loadMessageNumber + emailList.emailItemList.size
+                emailMessages.addAll(emailList.emailItemList)
+                Log.i("MyTag", "emailMessages.size ${emailMessages.size}")
+                _emailResponse.postValue(EmailResponse(emailMessages, emailList.responseCode))
+            }
             _loading.postValue(false)
         }
     }
 
-    fun getEmailSettings(){
+
+    private fun getEmailSettings(){
         val sharePref = PreferenceManager.getDefaultSharedPreferences(application)
         user = sharePref.getString("email", BuildConfig.EMAIL) ?: ""
         password = sharePref.getString("password", BuildConfig.PASSWORD) ?: ""

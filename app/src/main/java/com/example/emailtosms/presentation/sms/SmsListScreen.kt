@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.emailtosms.databinding.ListScreenBinding
 import com.example.emailtosms.presentation.EmailToListApp
 import com.example.emailtosms.presentation.ViewModelFactory
@@ -73,12 +74,13 @@ class SmsListScreen: Fragment() {
 
     }
 
-    fun setupRecyclerView(){
+    private fun setupRecyclerView(){
+        val layoutManager = LinearLayoutManager(requireContext())
         smsListAdapter = SmsListAdapter()
         with(binding.rv1){
-            binding.rv1.addItemDecoration(DividerItemDecoration(getContext(),
-                DividerItemDecoration.VERTICAL))
-            binding.rv1.adapter = smsListAdapter
+            this.layoutManager = layoutManager
+            addItemDecoration(DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL))
+            adapter = smsListAdapter
         }
     }
 
@@ -122,7 +124,4 @@ class SmsListScreen: Fragment() {
         _binding = null
     }
 
-    companion object{
-        fun getInstance() = SmsListScreen()
-    }
 }
